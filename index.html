@@ -31,7 +31,7 @@
     if ('caches' in window) {
       caches.keys().then(function(names) {
         names.forEach(function(name) {
-          if (name !== 'iradah-v10-cache') {
+          if (name !== 'iradah-v11-cache') {
             caches.delete(name);
           }
         });
@@ -2742,7 +2742,9 @@ body{background:#dde4ed;display:flex;justify-content:center;min-height:100vh;}
         <i class="ti ti-bell-ringing"></i>
       </button>
       <div class="app-hearts" id="headerHearts" title="Repentance Lives">
-        <span class="ht">❤️</span><span class="ht">❤️</span><span class="ht">❤️</span>
+        <span class="ht" style="display:inline-flex; align-items:center; margin: 0 1px;"><i class="ti ti-heart-filled" style="color: #ef4444; font-size: 15px;"></i></span>
+        <span class="ht" style="display:inline-flex; align-items:center; margin: 0 1px;"><i class="ti ti-heart-filled" style="color: #ef4444; font-size: 15px;"></i></span>
+        <span class="ht" style="display:inline-flex; align-items:center; margin: 0 1px;"><i class="ti ti-heart-filled" style="color: #ef4444; font-size: 15px;"></i></span>
       </div>
       <div class="app-xp-pill" id="headerXpPill">
         <i class="ti ti-bolt"></i> Lv <span id="headerLv">1</span> &bull; <span id="headerXp">0</span> XP
@@ -14043,7 +14045,7 @@ function initFirebase() {
       } catch(ex) {}
 
       isFirebaseReady = true;
-      console.log('Connected to Google Firebase Cloud (purify-app-b5f8b) ðŸŸ¢');
+      console.log('Connected to Google Firebase Cloud (purify-app-b5f8b) &#128994;');
     }
   } catch(e) {
     console.warn('Firebase init notice:', e);
@@ -14096,10 +14098,10 @@ function loadFromCloudDatabase(email, callback) {
   if (!email) return;
   var docKey = sanitizeEmailForDoc(email);
   var called = false;
-  function done(data, found) {
+  function done(data, found, isNetErr) {
     if (!called) {
       called = true;
-      callback(data, found);
+      callback(data, found, isNetErr || false);
     }
   }
 
@@ -14107,47 +14109,54 @@ function loadFromCloudDatabase(email, callback) {
   var cached = null;
   try { cached = localStorage.getItem('purify_cloud_' + docKey); } catch(e){}
 
-  // Safety timer so network or offline lag never blocks the user
+  if (!isFirebaseReady) {
+    try { initFirebase(); } catch(ex){}
+  }
+
+  // 12-second safety timeout so network issues don't hang forever
   var timer = setTimeout(function() {
-    if (cached) done(JSON.parse(cached), true);
-    else if (AppState.user && AppState.user.email && AppState.user.email.toLowerCase() === email.toLowerCase()) {
-      done(JSON.parse(JSON.stringify(AppState)), true);
+    if (cached) {
+      done(JSON.parse(cached), true, false);
+    } else if (AppState.user && AppState.user.email && AppState.user.email.toLowerCase() === email.toLowerCase()) {
+      done(JSON.parse(JSON.stringify(AppState)), true, false);
     } else {
-      done(null, false);
+      done(null, false, true); // true = network timeout
     }
-  }, 1000);
+  }, 12000);
 
   // If online, fetch latest from Firestore
-  if (isFirebaseReady && firebaseDb && navigator.onLine) {
+  if (firebaseDb && navigator.onLine) {
     firebaseDb.collection('users').doc(docKey).get()
       .then(function(doc) {
         clearTimeout(timer);
         if (doc.exists) {
-          done(doc.data(), true);
-        } else if (cached) {
-          done(JSON.parse(cached), true);
-        } else if (AppState.user && AppState.user.email && AppState.user.email.toLowerCase() === email.toLowerCase()) {
-          done(JSON.parse(JSON.stringify(AppState)), true);
+          var cloudData = doc.data();
+          try { localStorage.setItem('purify_cloud_' + docKey, JSON.stringify(cloudData)); } catch(e){}
+          done(cloudData, true, false);
         } else {
-          done(null, false);
+          // Document explicitly does not exist on server
+          done(null, false, false);
         }
       })
       .catch(function(err) {
         clearTimeout(timer);
-        if (cached) done(JSON.parse(cached), true);
-        else if (AppState.user && AppState.user.email && AppState.user.email.toLowerCase() === email.toLowerCase()) {
-          done(JSON.parse(JSON.stringify(AppState)), true);
+        console.warn('Firestore fetch notice:', err);
+        if (cached) {
+          done(JSON.parse(cached), true, false);
+        } else if (AppState.user && AppState.user.email && AppState.user.email.toLowerCase() === email.toLowerCase()) {
+          done(JSON.parse(JSON.stringify(AppState)), true, false);
         } else {
-          done(null, false);
+          done(null, false, true);
         }
       });
   } else {
     clearTimeout(timer);
-    if (cached) done(JSON.parse(cached), true);
-    else if (AppState.user && AppState.user.email && AppState.user.email.toLowerCase() === email.toLowerCase()) {
-      done(JSON.parse(JSON.stringify(AppState)), true);
+    if (cached) {
+      done(JSON.parse(cached), true, false);
+    } else if (AppState.user && AppState.user.email && AppState.user.email.toLowerCase() === email.toLowerCase()) {
+      done(JSON.parse(JSON.stringify(AppState)), true, false);
     } else {
-      done(null, false);
+      done(null, false, !navigator.onLine);
     }
   }
 }
@@ -14174,7 +14183,7 @@ function saveAppState(showToastAlert) {
       saveToCloudDatabase(AppState.user.email, AppState);
     }
 
-    if (showToastAlert) showToast('Progress auto-saved âœ“');
+    if (showToastAlert) showToast('Progress auto-saved &#10003;');
   } catch(e) {
     console.error('Save failed:', e);
   }
@@ -14236,7 +14245,7 @@ function updateSyncIndicator(saved) {
   if (AppState.user.isLoggedIn && AppState.user.email) {
     if (userTxt) userTxt.textContent = AppState.user.name || AppState.user.email.split('@')[0];
     if (setEmail) setEmail.textContent = AppState.user.email;
-    if (setTxt) setTxt.textContent = navigator.onLine ? 'Backup & Sync Active' : 'Offline â€” will sync when connected';
+    if (setTxt) setTxt.textContent = navigator.onLine ? 'Backup & Sync Active' : 'Offline &mdash; will sync when connected';
     if (dot) dot.style.background = navigator.onLine ? '#10b981' : '#f59e0b';
   } else {
     if (userTxt) userTxt.textContent = 'Sign In';
@@ -14256,7 +14265,7 @@ function addXP(amount) {
   var newLevel = Math.floor(AppState.xp / 100) + 1;
   AppState.level = newLevel;
   if (newLevel > oldLevel) {
-    showToast('Level Up! You reached Level ' + newLevel + ' ðŸŒŸ');
+    showToast('Level Up! You reached Level ' + newLevel + ' &#127775;');
   }
   updateXPDisplay();
   saveAppState(false);
@@ -14374,19 +14383,39 @@ function submitEmailAuth() {
     return;
   }
 
-  var hashedPwd = hashSecret(password);
-  showToast('Connecting...');
+  var btn = document.getElementById('authSubmitBtn');
+  var origText = btn ? btn.textContent : (currentAuthMode === 'login' ? 'Sign In' : 'Create Account');
+  if (btn) {
+    btn.disabled = true;
+    btn.innerHTML = '<i class="ti ti-loader ti-spin"></i> Checking Cloud Account...';
+  }
 
-  loadFromCloudDatabase(email, function(existingCloudData, found) {
+  function resetAuthBtn() {
+    if (btn) {
+      btn.disabled = false;
+      btn.textContent = (currentAuthMode === 'login' ? 'Sign In' : 'Create Account');
+    }
+  }
+
+  var hashedPwd = hashSecret(password);
+  showToast('Connecting to cloud...');
+
+  loadFromCloudDatabase(email, function(existingCloudData, found, isNetworkError) {
+    resetAuthBtn();
+
+    if (isNetworkError) {
+      alert('Network issue: Could not reach the cloud server. Please check your internet connection and tap Sign In again.');
+      return;
+    }
+
     if (currentAuthMode === 'login') {
       if (!found || !existingCloudData) {
-        alert('No account found with this email. Please click "New Account" tab to register.');
-        switchAuthTab('register');
+        alert('No account found for ' + email + '. If you have not created an account yet, tap "New Account" to register.');
         return;
       }
       // Check password if account has one set
       if (existingCloudData.authHash && existingCloudData.authHash !== hashedPwd) {
-        alert('Incorrect password for this account. If you forgot your password, click "Forgot Password / PIN?".');
+        alert('Incorrect password for this account. If you forgot your password, tap "Forgot Password / PIN?".');
         return;
       }
 
@@ -14400,11 +14429,11 @@ function submitEmailAuth() {
       renderAll();
       closeModal('authModal');
       checkOnboardingOrMainApp();
-      showToast('Welcome back! Journey restored â˜ï¸');
+      showToast('Welcome back, ' + (AppState.user.name || 'Brother') + '! Cloud journey synced.');
     } else {
       // REGISTER MODE
       if (found && existingCloudData && existingCloudData.authHash) {
-        alert('An account already exists with this email. Please click "Sign In".');
+        alert('An account with this email (' + email + ') ALREADY exists! Please enter your password and tap "Sign In".');
         switchAuthTab('login');
         return;
       }
@@ -14437,7 +14466,6 @@ function submitEmailAuth() {
       renderAll();
       showToast('Account created! Let us calibrate your baseline.');
 
-      // Launch full 31-step onboarding journey for new account!
       setTimeout(function() {
         openFullOnboardingJourney();
       }, 300);
@@ -14445,19 +14473,6 @@ function submitEmailAuth() {
     updateSyncIndicator(true);
   });
 }
-
-// ============================================================
-// ===  SECURE ACCOUNT RECOVERY (SECURITY QUESTION & EMAIL)  ===
-// ============================================================
-var SEC_QUESTIONS = {
-  'school': 'What was the name of your first school?',
-  'nickname': 'What was your childhood nickname?',
-  'book': 'What is your favorite Islamic book?',
-  'mother': "What is your mother's first name?"
-};
-
-// ============================================================
-// Account Recovery: Security Question (Default) & Firebase Password Reset Link
 
 function continueAsGuest() {
   closeModal('authModal');
@@ -14691,13 +14706,13 @@ function checkDailyNotificationTimes() {
 
   if (mins === 0) {
     if (hours === 6) {
-      sendNotification("Morning Adhkar â€¢ Al-Wazifatul Kareemah", "Begin your morning with authentic remembrance and renew your daily intention.");
+      sendNotification("Morning Adhkar &bull; Al-Wazifatul Kareemah", "Begin your morning with authentic remembrance and renew your daily intention.");
     } else if (hours === 14) {
-      sendNotification("Mindful Pause â€¢ Guarding the Gaze", "Protecting your gaze brings tranquility and peace of heart.");
+      sendNotification("Mindful Pause &bull; Guarding the Gaze", "Protecting your gaze brings tranquility and peace of heart.");
     } else if (hours === 18) {
-      sendNotification("Evening Adhkar â€¢ Al-Wazifatul Kareemah", "Shield your heart with evening supplications before nightfall.");
+      sendNotification("Evening Adhkar &bull; Al-Wazifatul Kareemah", "Shield your heart with evening supplications before nightfall.");
     } else if (hours === 22) {
-      sendNotification("Night Reflection â€¢ Muhasaba", "Take a quiet moment to reflect on your day and log your clean streak.");
+      sendNotification("Night Reflection &bull; Muhasaba", "Take a quiet moment to reflect on your day and log your clean streak.");
     }
   }
 }
@@ -14794,7 +14809,16 @@ function showToast(msg) {
 // ===  STREAK & WEEKLY CALENDAR LOGIC                       ===
 // ============================================================
 function calcStreakStartDate() {
-  if (AppState.streak.startDate) return new Date(AppState.streak.startDate);
+  if (AppState.streak && AppState.streak.startDate) {
+    if (typeof AppState.streak.startDate === 'string') {
+      var d = new Date(AppState.streak.startDate);
+      if (!isNaN(d.getTime())) return d;
+    } else if (AppState.streak.startDate.toDate) {
+      return AppState.streak.startDate.toDate();
+    } else if (AppState.streak.startDate.seconds) {
+      return new Date(AppState.streak.startDate.seconds * 1000);
+    }
+  }
 
   var dates = Object.keys(AppState.dayLogs).sort().reverse();
   var todayKey = todayDateKey();
@@ -14831,7 +14855,7 @@ function updateStreakTimer() {
     document.getElementById('timer-m').textContent = '00';
     document.getElementById('timer-s').textContent = '00';
     var prog = document.getElementById('homeCycleProg');
-    if (prog) prog.textContent = 'Day 1 of 365 â€¢ 0%';
+    if (prog) prog.textContent = 'Day 1 of 365 &bull; 0%';
     return;
   }
 
@@ -14850,7 +14874,7 @@ function updateStreakTimer() {
 
   var pct = Math.min(100, Math.round((days / 365) * 100));
   var progEl = document.getElementById('homeCycleProg');
-  if (progEl) progEl.textContent = 'Day ' + (days + 1) + ' of 365 â€¢ ' + pct + '%';
+  if (progEl) progEl.textContent = 'Day ' + (days + 1) + ' of 365 &bull; ' + pct + '%';
   var barEl = document.getElementById('homeDayBar');
   if (barEl) barEl.style.width = Math.max(3, pct) + '%';
 }
@@ -14930,7 +14954,7 @@ function renderWeek() {
   var markBtn = document.getElementById('btnMarkClean');
   if (markBtn) {
     if (todayLog === 'clean') {
-      markBtn.innerHTML = '<i class="ti ti-circle-check"></i> <span>Today Logged Clean âœ“</span>';
+      markBtn.innerHTML = '<i class="ti ti-circle-check"></i> <span>Today Logged Clean &#10003;</span>';
       markBtn.style.opacity = '0.85';
     } else {
       markBtn.innerHTML = '<i class="ti ti-check"></i> <span>Mark Today as Clean</span>';
@@ -14967,7 +14991,7 @@ function markTodayClean() {
       AppState.streak.lives = Math.min(3, currentLives + 1);
       AppState.streak.lastLifeRestoredAt10 = true;
       renderLivesDisplay();
-      showToast('Alhamdulillah! 10 clean days achieved â€” 1 Life restored! ðŸ’–');
+      showToast('Alhamdulillah! 10 clean days achieved &mdash; 1 Life restored! &#128150;');
     }
   }
 
@@ -14976,7 +15000,7 @@ function markTodayClean() {
   renderHomeTree();
   renderLivesDisplay();
   updateStreakTimer();
-  showToast('Today marked as clean ðŸŒŸ +20 XP');
+  showToast('Today marked as clean &#127775; +20 XP');
 }
 
 var editingDayDateKey = null;
@@ -15009,13 +15033,16 @@ function renderLivesDisplay() {
     for (var i = 0; i < 3; i++) {
       var s = document.createElement('span');
       s.className = 'ht';
-      s.textContent = 'â¤ï¸';
-      s.style.opacity = (i < livesCount) ? '1' : '0.2';
+      s.style.display = 'inline-flex';
+      s.style.alignItems = 'center';
+      s.style.margin = '0 1px';
+      s.innerHTML = '<i class="ti ti-heart-filled" style="color: #ef4444; font-size: 15px;"></i>';
+      s.style.opacity = (i < livesCount) ? '1' : '0.25';
       heartsEl.appendChild(s);
     }
   }
   var setLives = document.getElementById('settingsLivesCount');
-  if (setLives) setLives.textContent = livesCount;
+  if (setLives) setLives.textContent = livesCount + ' / 3';
 }
 
 function useRepentanceLife() {
@@ -15027,7 +15054,7 @@ function useRepentanceLife() {
   AppState.streak.lives = lives - 1;
   saveAppState(true);
   renderLivesDisplay();
-  showToast('Repentance life used. Streak preserved! ðŸ’–');
+  showToast('Repentance life used. Streak preserved! &#128150;');
 }
 
 function confirmFullReset() {
@@ -15062,7 +15089,7 @@ function openRelapseModal() {
   if (livesDisp) {
     var hearts = '';
     for (var i = 0; i < 3; i++) {
-      hearts += (i < livesCount) ? 'ðŸ’– ' : 'ðŸ–¤ ';
+      hearts += (i < livesCount) ? '&#128150; ' : 'ðŸ–¤ ';
     }
     livesDisp.textContent = hearts.trim();
   }
@@ -15133,7 +15160,7 @@ function submitRelapseWithShield() {
   AppState.relapseHistory.push(entry);
   AppState.dayLogs[todayDateKey()] = 'relapse';
   AppState.streak.lives = lives - 1;
-  // Do NOT reset streak startDate â€” shield preserves streak!
+  // Do NOT reset streak startDate &mdash; shield preserves streak!
 
   saveAppState(true);
   closeModal('relapseModal');
@@ -15141,7 +15168,7 @@ function submitRelapseWithShield() {
   renderHomeTree();
   renderLivesDisplay();
   updateStreakTimer();
-  showToast('Shield used! Streak preserved. ' + AppState.streak.lives + ' lives remaining. ðŸ’–');
+  showToast('Shield used! Streak preserved. ' + AppState.streak.lives + ' lives remaining. &#128150;');
 }
 
 function submitRelapseFullReset() {
@@ -15183,7 +15210,7 @@ function submitNiyah() {
   saveAppState(true);
   closeModal('niyahModal');
   renderTaskBadges();
-  showToast('Intention saved for today! +10 XP ðŸŒŸ');
+  showToast('Intention saved for today! +10 XP &#127775;');
 }
 
 // ============================================================
@@ -15416,7 +15443,7 @@ function renderDailyDay() {
   if (cycleBadge) {
     var cIdx = Math.floor((d - 1) / 7.5) + 1;
     if (typeof CYCLES !== 'undefined' && CYCLES[cIdx - 1]) {
-      cycleBadge.textContent = 'Cycle ' + cIdx + ' â€¢ ' + CYCLES[cIdx - 1].name;
+      cycleBadge.textContent = 'Cycle ' + cIdx + ' &bull; ' + CYCLES[cIdx - 1].name;
     } else {
       cycleBadge.textContent = 'Day ' + d + ' of 90';
     }
@@ -15509,7 +15536,7 @@ function onJournalInput() {
   if (status) status.textContent = 'Saving...';
   debouncedSave();
   setTimeout(function() {
-    if (status) status.textContent = 'Saved âœ“';
+    if (status) status.textContent = 'Saved &#10003;';
   }, 600);
 }
 
@@ -15710,7 +15737,7 @@ function lessonNextSlide() {
     saveAppState(true);
     closeModal('lessonModal');
     renderTaskBadges();
-    showToast('Lesson completed! +25 XP ðŸŒŸ');
+    showToast('Lesson completed! +25 XP &#127775;');
   }
 }
 
@@ -15778,7 +15805,7 @@ function completeAdhkar(type) {
   saveAppState(true);
   closeModal(type + 'Modal');
   renderTaskBadges();
-  showToast(type.charAt(0).toUpperCase() + type.slice(1) + ' Adhkar completed! +15 XP ðŸŒŸ');
+  showToast(type.charAt(0).toUpperCase() + type.slice(1) + ' Adhkar completed! +15 XP &#127775;');
 }
 
 function renderTaskBadges() {
@@ -16066,7 +16093,7 @@ var assessmentQuestions = [
   { q: "Do you feel guilty or ashamed after watching pornography?", sub: "Your answers help us support you better.", type: "spiritual" },
   { q: "Have you tried to stop but found it difficult?", sub: "Your answers help us support you better.", type: "mental" },
   { q: "Does pornography use affect your relationships or spiritual life?", sub: "Your answers help us support you better.", type: "relational" },
-  { q: "How often do you watch pornography?", sub: "Be honest â€” this helps us understand your situation.", type: "frequency" }
+  { q: "How often do you watch pornography?", sub: "Be honest &mdash; this helps us understand your situation.", type: "frequency" }
 ];
 var assessmentStep = 0;
 var assessmentAnswers = [];
@@ -16328,7 +16355,7 @@ function finishFullOnboarding() {
   }
   saveAppState(true);
   checkOnboardingOrMainApp();
-  showToast('Welcome to Iradah! Bismillah ðŸŒŸ');
+  showToast('Welcome to Iradah! Bismillah &#127775;');
 }
 
 function openFullOnboardingJourney() {
@@ -16381,7 +16408,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
   // Register service worker with instant update
   if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('sw.js?v=10').then(function(reg) {
+    navigator.serviceWorker.register('sw.js?v=11').then(function(reg) {
       if (reg) reg.update();
     }).catch(function(){});
   }
