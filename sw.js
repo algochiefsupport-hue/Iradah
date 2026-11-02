@@ -1,5 +1,5 @@
 // Iradah Service Worker for offline support & automatic cache updates
-const CACHE_NAME = 'iradah-v6-cache';
+const CACHE_NAME = 'iradah-v10-cache';
 const ASSETS = [
   './',
   './index.html',
@@ -16,29 +16,34 @@ self.addEventListener('install', (e) => {
   self.skipWaiting();
 });
 
-// Purge any older cache versions immediately on activate
+// Purge ALL older cache versions immediately on activate
 self.addEventListener('activate', (e) => {
   e.waitUntil(
     caches.keys().then((keys) => {
       return Promise.all(
-        keys.filter((key) => key !== CACHE_NAME).map((key) => caches.delete(key))
+        keys.map((key) => {
+          if (key !== CACHE_NAME) {
+            console.log('[SW] Purging old cache:', key);
+            return caches.delete(key);
+          }
+        })
       );
     })
   );
   self.clients.claim();
 });
 
-// Network-First for HTML/Navigation, Cache fallback for offline
+// Network-First with cache: 'reload' for HTML/Navigation, Cache fallback for offline
 self.addEventListener('fetch', (e) => {
   if (e.request.mode === 'navigate' || (e.request.method === 'GET' && e.request.headers.get('accept') && e.request.headers.get('accept').includes('text/html'))) {
     e.respondWith(
-      fetch(e.request)
+      fetch(e.request, { cache: 'reload' })
         .then((response) => {
           let copy = response.clone();
           caches.open(CACHE_NAME).then((cache) => cache.put(e.request, copy));
           return response;
         })
-        .catch(() => caches.match(e.request))
+        .catch(() => caches.match(e.request).then((cached) => cached || caches.match('./index.html')))
     );
     return;
   }
