@@ -31,7 +31,7 @@
     if ('caches' in window) {
       caches.keys().then(function(names) {
         names.forEach(function(name) {
-          if (name !== 'iradah-v11-cache') {
+          if (name !== 'iradah-v12-cache') {
             caches.delete(name);
           }
         });
@@ -2759,7 +2759,7 @@ body{background:#dde4ed;display:flex;justify-content:center;min-height:100vh;}
     <!-- TAB 1: HOME DASHBOARD                                    -->
     <!-- ======================================================== -->
     <section class="tab-screen active" id="tab-home">
-      <!-- Header Gradient Card -->
+      <!-- Header Gradient Card: Faith Tree ONLY -->
       <div class="home-hdr-card">
         <!-- Faith / 365-Day Tree of Faith Card -->
         <div class="faith-card" onclick="switchTab('journey')">
@@ -2783,26 +2783,6 @@ body{background:#dde4ed;display:flex;justify-content:center;min-height:100vh;}
                 <div class="streak-bar-fill" id="treeMilestoneBar" style="width: 5%; background: #ffd54f;"></div>
               </div>
             </div>
-          </div>
-        </div>
-
-        <!-- Live Clean Streak Card -->
-        <div class="streak-card">
-          <div class="streak-header">
-            <span class="streak-tag">Clean Streak</span>
-            <span class="streak-progress-txt" id="homeCycleProg">Day 1 of 365 &bull; 1%</span>
-          </div>
-          <div class="streak-timer-row">
-            <div class="timer-unit"><div class="timer-val" id="timer-d">00</div><div class="timer-lbl">Days</div></div>
-            <div class="timer-sep">:</div>
-            <div class="timer-unit"><div class="timer-val" id="timer-h">00</div><div class="timer-lbl">Hrs</div></div>
-            <div class="timer-sep">:</div>
-            <div class="timer-unit"><div class="timer-val" id="timer-m">00</div><div class="timer-lbl">Min</div></div>
-            <div class="timer-sep">:</div>
-            <div class="timer-unit"><div class="timer-val" id="timer-s">00</div><div class="timer-lbl">Sec</div></div>
-          </div>
-          <div class="streak-bar-bg">
-            <div class="streak-bar-fill" id="homeDayBar" style="width: 3%;"></div>
           </div>
         </div>
       </div>
@@ -3002,42 +2982,42 @@ body{background:#dde4ed;display:flex;justify-content:center;min-height:100vh;}
     <section class="tab-screen" id="tab-journey">
       <div style="padding: 14px 14px 80px; max-width: 430px; margin: 0 auto;">
 
-        <!-- Journey Page Header -->
-        <div style="text-align: center; padding: 18px 0 14px;">
-          <div style="font-size: 26px; margin-bottom: 4px;">&#x1F331;</div>
-          <div style="font-size: 18px; font-weight: 800; color: #0f172a; letter-spacing: -0.3px;">My Iradah Journey</div>
-          <div style="font-size: 12.5px; color: #64748b; margin-top: 3px;">&#x0625;&#x0631;&#x0627;&#x062F;&#x0629; &bull; Willpower &bull; Self-Mastery</div>
+        <!-- Journey Page Header (No Tree - Tree is on Home Page) -->
+        <div style="text-align: center; padding: 16px 0 12px;">
+          <div style="font-size: 24px; margin-bottom: 2px;">&#x1F4DC;</div>
+          <div style="font-size: 18px; font-weight: 800; color: #0f172a; letter-spacing: -0.3px;">My Recovery History</div>
+          <div style="font-size: 12px; color: #64748b; margin-top: 2px;">Comprehensive Journey Statistics &bull; Milestones &bull; Reflections</div>
         </div>
 
-        <!-- Stats Grid 2x2 -->
+        <!-- Stats Grid 2x2: Clean, Days, Breaks, Started -->
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 14px;">
 
           <!-- Card 1: Started On -->
-          <div style="background: linear-gradient(135deg, #1a5fa8, #0284c7); border-radius: 16px; padding: 14px 12px; color: #fff;">
+          <div style="background: linear-gradient(135deg, #1a5fa8, #0284c7); border-radius: 16px; padding: 14px 12px; color: #fff; box-shadow: 0 2px 8px rgba(2,132,199,0.18);">
             <div style="font-size: 10px; font-weight: 700; opacity: 0.85; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px;">&#x1F4C5; Started On</div>
             <div id="jStatStartedDate" style="font-size: 15px; font-weight: 800; margin-bottom: 2px;">--</div>
             <div id="jStatStartedSub" style="font-size: 10.5px; opacity: 0.85;">Loading...</div>
           </div>
 
-          <!-- Card 2: Total Days -->
-          <div style="background: linear-gradient(135deg, #7c3aed, #6d28d9); border-radius: 16px; padding: 14px 12px; color: #fff;">
+          <!-- Card 2: Total Days On Path -->
+          <div style="background: linear-gradient(135deg, #7c3aed, #6d28d9); border-radius: 16px; padding: 14px 12px; color: #fff; box-shadow: 0 2px 8px rgba(124,58,237,0.18);">
             <div style="font-size: 10px; font-weight: 700; opacity: 0.85; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px;">&#x23F3; On This Path</div>
             <div id="jStatTotalDays" style="font-size: 15px; font-weight: 800; margin-bottom: 2px;">-- Days</div>
             <div style="font-size: 10.5px; opacity: 0.85;">Since Journey Start</div>
           </div>
 
           <!-- Card 3: Clean Streak -->
-          <div style="background: linear-gradient(135deg, #059669, #047857); border-radius: 16px; padding: 14px 12px; color: #fff;">
+          <div style="background: linear-gradient(135deg, #059669, #047857); border-radius: 16px; padding: 14px 12px; color: #fff; box-shadow: 0 2px 8px rgba(5,150,105,0.18);">
             <div style="font-size: 10px; font-weight: 700; opacity: 0.85; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px;">&#x2728; Clean Streak</div>
             <div id="jStatCleanStreak" style="font-size: 15px; font-weight: 800; margin-bottom: 2px;">0 Days Clean</div>
             <div id="jStatCleanTotal" style="font-size: 10.5px; opacity: 0.85;">0 Clean Days Logged</div>
           </div>
 
-          <!-- Card 4: Breaks -->
-          <div style="background: linear-gradient(135deg, #dc2626, #b91c1c); border-radius: 16px; padding: 14px 12px; color: #fff;">
-            <div style="font-size: 10px; font-weight: 700; opacity: 0.85; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px;">&#x1F4CA; Breaks</div>
+          <!-- Card 4: Breaks & Lives -->
+          <div style="background: linear-gradient(135deg, #dc2626, #b91c1c); border-radius: 16px; padding: 14px 12px; color: #fff; box-shadow: 0 2px 8px rgba(220,38,38,0.18);">
+            <div style="font-size: 10px; font-weight: 700; opacity: 0.85; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px;">&#x1F4CA; Slips / Breaks</div>
             <div id="jStatBreaks" style="font-size: 15px; font-weight: 800; margin-bottom: 2px;">0 Breaks</div>
-            <div id="jStatLivesLeft" style="font-size: 10.5px; opacity: 0.85;">&#x2764;&#xFE0F; &#x2764;&#xFE0F; &#x2764;&#xFE0F; 3 Lives Left</div>
+            <div id="jStatLivesLeft" style="font-size: 10.5px; opacity: 0.85;">3 Lives Left</div>
           </div>
 
         </div>
@@ -14197,9 +14177,22 @@ function loadAppState() {
       if (parsed) {
         AppState = Object.assign(AppState, parsed);
         if (typeof AppState.xp !== 'number') AppState.xp = 0;
-        if (typeof AppState.level !== 'number') AppState.level = Math.floor(AppState.xp / 100) + 1;
+        AppState.level = getLevelFromXP(AppState.xp);
         if (!AppState.streak) AppState.streak = { startDate: null, lives: 3 };
-        if (AppState.streak.lives === undefined) AppState.streak.lives = 3;
+        // Heal lives: if user has no shield used in relapseHistory, lives MUST be 3
+        var shieldsUsedCount = 0;
+        if (AppState.relapseHistory && AppState.relapseHistory.length > 0) {
+          for (var rhi = 0; rhi < AppState.relapseHistory.length; rhi++) {
+            if (AppState.relapseHistory[rhi] && AppState.relapseHistory[rhi].shieldUsed) {
+              shieldsUsedCount++;
+            }
+          }
+        }
+        if (shieldsUsedCount === 0) {
+          AppState.streak.lives = 3;
+        } else if (typeof AppState.streak.lives !== 'number') {
+          AppState.streak.lives = Math.max(0, 3 - shieldsUsedCount);
+        }
       }
     } else {
       // Migrate from old HOME rstate if available
@@ -14214,6 +14207,22 @@ function loadAppState() {
     }
   } catch(e) {
     console.error('Load failed:', e);
+  }
+
+    // Always ensure lives: if user has no shield used in relapseHistory, lives MUST be 3!
+  if (!AppState.streak) AppState.streak = { startDate: null, lives: 3 };
+  var shieldsUsedCount = 0;
+  if (AppState.relapseHistory && AppState.relapseHistory.length > 0) {
+    for (var rhi = 0; rhi < AppState.relapseHistory.length; rhi++) {
+      if (AppState.relapseHistory[rhi] && AppState.relapseHistory[rhi].shieldUsed) {
+        shieldsUsedCount++;
+      }
+    }
+  }
+  if (shieldsUsedCount === 0) {
+    AppState.streak.lives = 3;
+  } else if (typeof AppState.streak.lives !== 'number') {
+    AppState.streak.lives = Math.max(0, 3 - shieldsUsedCount);
   }
 
   ensureDayProgress(AppState.dailyProgram.currentDay);
@@ -14258,14 +14267,31 @@ function updateSyncIndicator(saved) {
 // ============================================================
 // ===  XP & LEVEL SYSTEM                                   ===
 // ============================================================
+function getLevelFromXP(xp) {
+  var thresholds = [0, 100, 250, 500, 800, 1200, 1700, 2300, 3000, 4000, 5500, 7500, 10000];
+  for (var i = thresholds.length - 1; i >= 0; i--) {
+    if (xp >= thresholds[i]) return i + 1;
+  }
+  return 1;
+}
+function getXPForLevel(lv) {
+  var thresholds = [0, 100, 250, 500, 800, 1200, 1700, 2300, 3000, 4000, 5500, 7500, 10000];
+  return thresholds[Math.min(lv - 1, thresholds.length - 1)] || 0;
+}
+function getXPForNextLevel(lv) {
+  var thresholds = [0, 100, 250, 500, 800, 1200, 1700, 2300, 3000, 4000, 5500, 7500, 10000];
+  var idx = Math.min(lv, thresholds.length - 1);
+  return thresholds[idx] || thresholds[thresholds.length - 1];
+}
+
 function addXP(amount) {
   if (typeof AppState.xp !== 'number') AppState.xp = 0;
-  var oldLevel = Math.floor(AppState.xp / 100) + 1;
+  var oldLevel = getLevelFromXP(AppState.xp);
   AppState.xp += amount;
-  var newLevel = Math.floor(AppState.xp / 100) + 1;
+  var newLevel = getLevelFromXP(AppState.xp);
   AppState.level = newLevel;
   if (newLevel > oldLevel) {
-    showToast('Level Up! You reached Level ' + newLevel + ' &#127775;');
+    showToast('Mubarak! Level ' + newLevel + ' reached! Keep going!');
   }
   updateXPDisplay();
   saveAppState(false);
@@ -14275,7 +14301,7 @@ function updateXPDisplay() {
   var xpEl = document.getElementById('headerXp');
   var lvEl = document.getElementById('headerLv');
   if (typeof AppState.xp !== 'number') AppState.xp = 0;
-  AppState.level = Math.floor(AppState.xp / 100) + 1;
+  AppState.level = getLevelFromXP(AppState.xp);
   if (xpEl) xpEl.textContent = AppState.xp;
   if (lvEl) lvEl.textContent = AppState.level;
 }
@@ -14848,14 +14874,22 @@ function calcStreakStartDate() {
 }
 
 function updateStreakTimer() {
+  function pad2(n) { return n < 10 ? '0' + n : '' + n; }
+  var td = document.getElementById('timer-d');
+  var th = document.getElementById('timer-h');
+  var tm = document.getElementById('timer-m');
+  var ts = document.getElementById('timer-s');
+  var progEl = document.getElementById('homeCycleProg');
+  var barEl = document.getElementById('homeDayBar');
+
   var start = calcStreakStartDate();
   if (!start) {
-    document.getElementById('timer-d').textContent = '00';
-    document.getElementById('timer-h').textContent = '00';
-    document.getElementById('timer-m').textContent = '00';
-    document.getElementById('timer-s').textContent = '00';
-    var prog = document.getElementById('homeCycleProg');
-    if (prog) prog.textContent = 'Day 1 of 365 &bull; 0%';
+    if (td) td.textContent = '00';
+    if (th) th.textContent = '00';
+    if (tm) tm.textContent = '00';
+    if (ts) ts.textContent = '00';
+    if (progEl) progEl.textContent = 'Day 1 of 365 &bull; 0%';
+    if (barEl) barEl.style.width = '0%';
     return;
   }
 
@@ -14867,16 +14901,14 @@ function updateStreakTimer() {
   var mins = Math.floor((diff / (1000 * 60)) % 60);
   var secs = Math.floor((diff / 1000) % 60);
 
-  document.getElementById('timer-d').textContent = pad2(days);
-  document.getElementById('timer-h').textContent = pad2(hours);
-  document.getElementById('timer-m').textContent = pad2(mins);
-  document.getElementById('timer-s').textContent = pad2(secs);
+  if (td) td.textContent = pad2(days);
+  if (th) th.textContent = pad2(hours);
+  if (tm) tm.textContent = pad2(mins);
+  if (ts) ts.textContent = pad2(secs);
 
-  var pct = Math.min(100, Math.round((days / 365) * 100));
-  var progEl = document.getElementById('homeCycleProg');
+  var pct = Math.min(100, Math.round(((days + 1) / 365) * 100));
   if (progEl) progEl.textContent = 'Day ' + (days + 1) + ' of 365 &bull; ' + pct + '%';
-  var barEl = document.getElementById('homeDayBar');
-  if (barEl) barEl.style.width = Math.max(3, pct) + '%';
+  if (barEl) barEl.style.width = pct + '%';
 }
 
 var currentWeekOffset = 0;
@@ -14967,11 +14999,12 @@ function renderWeek() {
 
 function markTodayClean() {
   var key = todayDateKey();
+  var alreadyClean = (AppState.dayLogs[key] === 'clean');
   AppState.dayLogs[key] = 'clean';
   if (!AppState.streak.startDate) {
     AppState.streak.startDate = new Date().toISOString();
   }
-  addXP(20);
+  if (!alreadyClean) addXP(20);
 
   // Check 10 consecutive clean days to restore 1 life (up to 3)
   var currentLives = AppState.streak.lives !== undefined ? AppState.streak.lives : 3;
@@ -15204,9 +15237,10 @@ function openNiyahModal() {
 
 function submitNiyah() {
   var txt = document.getElementById('niyahTextInput').value.trim();
+  var niyahAlreadyToday = (AppState.niyah.date === todayDateKey());
   AppState.niyah.text = txt;
   AppState.niyah.date = todayDateKey();
-  addXP(10);
+  if (!niyahAlreadyToday) addXP(10);
   saveAppState(true);
   closeModal('niyahModal');
   renderTaskBadges();
@@ -15726,14 +15760,16 @@ function lessonNextSlide() {
     if (reflInp) reflInp.style.borderColor = 'rgba(255,255,255,0.22)';
 
     ensureDayProgress(currentSelectedDay);
+    var lessonProg = AppState.dailyProgram.dayProgress[currentSelectedDay];
+    var lessonAlreadyDone = (currentLessonType === 'ibn') ? lessonProg.ibnDone : lessonProg.bfDone;
     if (currentLessonType === 'ibn') {
-      AppState.dailyProgram.dayProgress[currentSelectedDay].ibnDone = true;
-      AppState.dailyProgram.dayProgress[currentSelectedDay].ibnRefl = val;
+      lessonProg.ibnDone = true;
+      lessonProg.ibnRefl = val;
     } else {
-      AppState.dailyProgram.dayProgress[currentSelectedDay].bfDone = true;
-      AppState.dailyProgram.dayProgress[currentSelectedDay].bfRefl = val;
+      lessonProg.bfDone = true;
+      lessonProg.bfRefl = val;
     }
-    addXP(25);
+    if (!lessonAlreadyDone) addXP(25);
     saveAppState(true);
     closeModal('lessonModal');
     renderTaskBadges();
@@ -15799,9 +15835,11 @@ function toggleDuaCheck(type, idx) {
 
 function completeAdhkar(type) {
   ensureDayProgress(currentSelectedDay);
-  if (type === 'morning') AppState.dailyProgram.dayProgress[currentSelectedDay].morningDone = true;
-  else AppState.dailyProgram.dayProgress[currentSelectedDay].eveningDone = true;
-  addXP(15);
+  var prog = AppState.dailyProgram.dayProgress[currentSelectedDay];
+  var alreadyDone = (type === 'morning') ? prog.morningDone : prog.eveningDone;
+  if (type === 'morning') prog.morningDone = true;
+  else prog.eveningDone = true;
+  if (!alreadyDone) addXP(15);
   saveAppState(true);
   closeModal(type + 'Modal');
   renderTaskBadges();
@@ -16408,7 +16446,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
   // Register service worker with instant update
   if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('sw.js?v=11').then(function(reg) {
+    navigator.serviceWorker.register('sw.js?v=12').then(function(reg) {
       if (reg) reg.update();
     }).catch(function(){});
   }

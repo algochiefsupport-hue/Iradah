@@ -1,5 +1,5 @@
 // Iradah Service Worker for offline support & automatic cache updates
-const CACHE_NAME = 'iradah-v10-cache';
+const CACHE_NAME = 'iradah-v12-cache';
 const ASSETS = [
   './',
   './index.html',
