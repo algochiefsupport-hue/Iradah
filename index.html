@@ -26,8 +26,7 @@
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
 
-  <!-- EmailJS - Real Email OTP Sender (Free, No Backend Needed) -->
-  <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+  <!-- Account Security: Security Question Recovery & Firebase Auth -->
 
 
 <style>
@@ -2195,6 +2194,64 @@ body {
   box-shadow: 0 1px 6px rgba(239,68,68,0.2);
 }
 
+
+/* Onboarding Mobile Fixes */
+.onboarding-screen {
+  max-height: 100vh;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+.onboarding-screen .q-option-btn {
+  padding: 10px 14px;
+  font-size: 13px;
+  margin-bottom: 6px;
+  min-height: 44px;
+}
+.onboarding-screen h2, .onboarding-screen .screen-title {
+  font-size: clamp(16px, 4vw, 22px);
+  line-height: 1.3;
+  margin-bottom: 8px;
+}
+.onboarding-screen .screen-subtitle, .onboarding-screen p {
+  font-size: clamp(12px, 3vw, 14px);
+  line-height: 1.45;
+}
+/* Prevent onboarding from being taller than screen */
+#onboardingContainer {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  overflow: hidden;
+}
+#onboardingContainer .ob-slide {
+  height: 100%;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  padding-bottom: env(safe-area-inset-bottom, 16px);
+}
+/* Question screens - compact layout */
+.ob-question-wrap {
+  padding: 16px 16px 80px;
+}
+.ob-question-wrap .ob-q-title {
+  font-size: clamp(15px, 4.5vw, 20px);
+  font-weight: 800;
+  line-height: 1.3;
+  margin-bottom: 6px;
+}
+.ob-question-wrap .ob-q-subtitle {
+  font-size: clamp(11px, 3vw, 13px);
+  color: #64748b;
+  margin-bottom: 14px;
+}
+.ob-option-card {
+  padding: 10px 14px;
+  margin-bottom: 6px;
+  border-radius: 10px;
+  font-size: 13px;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+}
 </style>
 
 
@@ -2532,6 +2589,126 @@ body{background:#dde4ed;display:flex;justify-content:center;min-height:100vh;}
 .p4cal-day.other-month{color:#D1D5DB}
 .p4cal-day.past{color:#D1D5DB;cursor:default}
 .p4cal-day.past:hover{background:transparent;color:#D1D5DB}
+
+/* ============================================================ */
+/* === MASTER UNIFIED RESPONSIVE SIZING FOR ALL 31 ONBOARDING SCREENS === */
+/* ============================================================ */
+#onboardingFlowContainer {
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  width: 100vw !important;
+  height: 100vh !important;
+  height: 100dvh !important;
+  z-index: 9990 !important;
+  background: #f1f5f9 !important;
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+  -webkit-overflow-scrolling: touch !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+#onboardingFlowContainer > div {
+  width: 100% !important;
+  min-height: 100% !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: flex-start !important;
+  padding: 0 !important;
+  margin: 0 !important;
+}
+
+.splash,
+.p1-wrap,
+.urge-screen,
+.p2-wrap,
+#phase3-wrap,
+#phase3-wrap .phone,
+#phase4-wrap,
+.p4app {
+  width: 100% !important;
+  max-width: 430px !important;
+  margin: 0 auto !important;
+  box-sizing: border-box !important;
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+  -webkit-overflow-scrolling: touch !important;
+}
+
+.screen-p1,
+.screen,
+.screen22,
+.pur-screen22,
+.bf-screen22,
+.dr-screen22 {
+  min-height: 100vh !important;
+  min-height: 100dvh !important;
+  box-sizing: border-box !important;
+  display: flex !important;
+  flex-direction: column !important;
+  padding-bottom: calc(24px + env(safe-area-inset-bottom, 0px)) !important;
+}
+
+.screen22:not(.active),
+.pur-screen22:not(.active),
+.bf-screen22:not(.active),
+.dr-screen22:not(.active),
+.screen:not(.active),
+.screen-p1:not(.active) {
+  display: none !important;
+}
+
+@media (max-width: 480px) {
+  #onboardingFlowContainer {
+    background: #ffffff !important;
+  }
+  .splash,
+  .p1-wrap,
+  .urge-screen,
+  .p2-wrap,
+  #phase3-wrap,
+  #phase3-wrap .phone,
+  #phase4-wrap,
+  .p4app {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-height: 100vh !important;
+    min-height: 100dvh !important;
+    border-radius: 0 !important;
+    border: none !important;
+    box-shadow: none !important;
+    margin: 0 !important;
+  }
+  .splash {
+    height: 100vh !important;
+    height: 100dvh !important;
+  }
+}
+
+@media (min-width: 481px) {
+  .splash,
+  .p1-wrap,
+  .urge-screen,
+  .p2-wrap,
+  #phase3-wrap .phone,
+  .p4app {
+    min-height: calc(100vh - 32px) !important;
+    min-height: calc(100dvh - 32px) !important;
+    border-radius: 28px !important;
+    border: 1px solid #d0d8e4 !important;
+    box-shadow: 0 10px 30px rgba(15, 23, 42, 0.12) !important;
+    margin: 16px auto !important;
+  }
+  .splash {
+    height: calc(100vh - 32px) !important;
+    height: calc(100dvh - 32px) !important;
+  }
+}
+
 </style>
 </head>
 <body>
@@ -2697,6 +2874,8 @@ body{background:#dde4ed;display:flex;justify-content:center;min-height:100vh;}
       <!-- Day Content Scrollable Area -->
       <div class="daily-content-wrap" id="dailyContentWrap">
 
+        <div id="dailyDayLockedMsg" style="display:none; flex-direction:column; align-items:center; justify-content:center; min-height:60vh;"></div>
+        <div id="dailyDayContent">
         <!-- 1. Daily Spiritual Practices Grid (Moved from Home Page) -->
         <div class="daily-rituals-sec" style="margin-bottom: 16px;">
           <div class="sec-hdr-row">
@@ -2790,6 +2969,7 @@ body{background:#dde4ed;display:flex;justify-content:center;min-height:100vh;}
             Action reminder content...
           </div>
         </div>
+        </div><!-- end #dailyDayContent -->
 
       </div><!-- end .daily-content-wrap -->
     </section>
@@ -4323,6 +4503,128 @@ body{background:#dde4ed;display:flex;justify-content:center;min-height:100vh;}
 </html>
   </div>
 </div>
+<style>
+
+/* ============================================================ */
+/* === MASTER UNIFIED RESPONSIVE SIZING FOR ALL 31 ONBOARDING SCREENS === */
+/* ============================================================ */
+#onboardingFlowContainer {
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  width: 100vw !important;
+  height: 100vh !important;
+  height: 100dvh !important;
+  z-index: 9990 !important;
+  background: #f1f5f9 !important;
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+  -webkit-overflow-scrolling: touch !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+#onboardingFlowContainer > div {
+  width: 100% !important;
+  min-height: 100% !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: flex-start !important;
+  padding: 0 !important;
+  margin: 0 !important;
+}
+
+.splash,
+.p1-wrap,
+.urge-screen,
+.p2-wrap,
+#phase3-wrap,
+#phase3-wrap .phone,
+#phase4-wrap,
+.p4app {
+  width: 100% !important;
+  max-width: 430px !important;
+  margin: 0 auto !important;
+  box-sizing: border-box !important;
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+  -webkit-overflow-scrolling: touch !important;
+}
+
+.screen-p1,
+.screen,
+.screen22,
+.pur-screen22,
+.bf-screen22,
+.dr-screen22 {
+  min-height: 100vh !important;
+  min-height: 100dvh !important;
+  box-sizing: border-box !important;
+  display: flex !important;
+  flex-direction: column !important;
+  padding-bottom: calc(24px + env(safe-area-inset-bottom, 0px)) !important;
+}
+
+.screen22:not(.active),
+.pur-screen22:not(.active),
+.bf-screen22:not(.active),
+.dr-screen22:not(.active),
+.screen:not(.active),
+.screen-p1:not(.active) {
+  display: none !important;
+}
+
+@media (max-width: 480px) {
+  #onboardingFlowContainer {
+    background: #ffffff !important;
+  }
+  .splash,
+  .p1-wrap,
+  .urge-screen,
+  .p2-wrap,
+  #phase3-wrap,
+  #phase3-wrap .phone,
+  #phase4-wrap,
+  .p4app {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-height: 100vh !important;
+    min-height: 100dvh !important;
+    border-radius: 0 !important;
+    border: none !important;
+    box-shadow: none !important;
+    margin: 0 !important;
+  }
+  .splash {
+    height: 100vh !important;
+    height: 100dvh !important;
+  }
+}
+
+@media (min-width: 481px) {
+  .splash,
+  .p1-wrap,
+  .urge-screen,
+  .p2-wrap,
+  #phase3-wrap .phone,
+  .p4app {
+    min-height: calc(100vh - 32px) !important;
+    min-height: calc(100dvh - 32px) !important;
+    border-radius: 28px !important;
+    border: 1px solid #d0d8e4 !important;
+    box-shadow: 0 10px 30px rgba(15, 23, 42, 0.12) !important;
+    margin: 16px auto !important;
+  }
+  .splash {
+    height: calc(100vh - 32px) !important;
+    height: calc(100dvh - 32px) !important;
+  }
+}
+
+</style>
 
 
 <!-- ============================================================ -->
@@ -4529,69 +4831,74 @@ body{background:#dde4ed;display:flex;justify-content:center;min-height:100vh;}
       </div>
     </div>
 
-    <!-- Form 2: Forgot Password - Email OTP (Secure) -->
+    <!-- Form 2: Forgot Password - Security Question Recovery -->
     <div id="authForgotForm" style="display: none;">
-
-      <!-- Step 1: Enter Email -->
-      <div id="otpStep1">
-        <div style="font-size: 13px; color: #475569; margin-bottom: 16px; line-height: 1.5;">
-          Enter your registered email. A <strong>6-digit OTP</strong> will be sent directly to your inbox — secure and private.
-        </div>
-        <div class="auth-input-group">
-          <label class="auth-label"><i class="ti ti-mail"></i> Registered Email Address</label>
-          <input type="email" class="auth-input" id="authForgotEmailInput" placeholder="your.email@example.com">
-        </div>
-        <div id="otpSendError" style="display:none; color:#dc2626; font-size:12px; margin-bottom:10px; padding: 8px 12px; background:#fef2f2; border-radius:8px;"></div>
-        <button type="button" class="auth-submit-btn" id="btnSendOtp" onclick="sendEmailOTP()" style="background: linear-gradient(135deg, #1a5fa8, #0284c7);">
-          <i class="ti ti-send"></i> Send OTP to My Email
-        </button>
-        <div style="text-align:center; margin-top:10px; font-size:11.5px; color:#94a3b8;">
-          <i class="ti ti-lock"></i> OTP expires in 10 minutes &bull; Sent only to your email
-        </div>
+      <div style="font-size: 13px; color: #475569; margin-bottom: 14px; line-height: 1.5;">
+        To protect your account, verify your identity using your security question. Only you know this answer.
       </div>
 
-      <!-- Step 2: Enter OTP + New Password -->
-      <div id="otpStep2" style="display:none;">
-        <div style="background: #ecfdf5; border: 1.5px solid #10b981; border-radius: 10px; padding: 12px; margin-bottom: 14px;">
-          <div style="font-size: 12.5px; font-weight: 700; color: #065f46; margin-bottom: 3px;">
-            <i class="ti ti-mail-check"></i> OTP Sent Successfully!
-          </div>
-          <div style="font-size: 11.5px; color: #047857;" id="otpSentToMsg">
-            Check your email inbox (and Spam folder).
-          </div>
+      <div class="auth-input-group">
+        <label class="auth-label"><i class="ti ti-mail"></i> Your Registered Email Address</label>
+        <input type="email" class="auth-input" id="authForgotEmailInput" placeholder="your.email@example.com">
+      </div>
+
+      <!-- Method 1: Security Question (Default, Instant & Secure) -->
+      <div id="secRecovSecQ" style="background: #f8fafc; border: 1.5px solid #e2e8f0; border-radius: 12px; padding: 14px; margin-bottom: 14px;">
+        <div style="font-size: 12px; color: #64748b; margin-bottom: 10px; line-height: 1.45;">
+          Answer the security question you chose during registration:
         </div>
-        <div class="auth-input-group">
-          <label class="auth-label"><i class="ti ti-numbers"></i> Enter 6-Digit OTP Code</label>
-          <input type="number" class="auth-input" id="authForgotOtpInput" placeholder="e.g. 284739" maxlength="6" style="letter-spacing: 4px; font-size: 20px; font-weight: 700; text-align: center;">
-        </div>
-        <div class="auth-input-group">
-          <label class="auth-label"><i class="ti ti-lock"></i> New Password / PIN (Min 4 chars)</label>
-          <input type="password" class="auth-input" id="authForgotNewPwd" placeholder="••••••••">
-        </div>
-        <div id="otpVerifyError" style="display:none; color:#dc2626; font-size:12px; margin-bottom:10px; padding: 8px 12px; background:#fef2f2; border-radius:8px;"></div>
-        <button type="button" class="auth-submit-btn" onclick="verifyEmailOTP()" style="background: linear-gradient(135deg, #10b981, #059669);">
-          <i class="ti ti-shield-check"></i> Verify OTP & Reset Password
+
+        <button type="button" class="auth-submit-btn" id="btnFindSecQ" onclick="lookupSecurityQuestion()" style="padding: 10px; font-size: 13px; margin-bottom: 10px;">
+          <i class="ti ti-search"></i> Find My Security Question
         </button>
-        <div style="text-align:center; margin-top:10px;">
-          <button type="button" onclick="resendOTP()" style="background:none; border:none; color:#1a5fa8; font-size:12px; font-weight:700; cursor:pointer; text-decoration:underline;">
-            <i class="ti ti-refresh"></i> Resend OTP
+
+        <div id="secQAnswerArea" style="display: none;">
+          <div style="background: #eff6ff; border: 1.5px solid #bfdbfe; border-radius: 8px; padding: 10px 12px; margin-bottom: 10px;">
+            <div style="font-size: 11px; color: #1e40af; font-weight: 700; margin-bottom: 3px;">YOUR SECURITY QUESTION:</div>
+            <div style="font-size: 13px; color: #1e3a8a; font-weight: 600;" id="dispSecQPrompt"></div>
+          </div>
+          <div class="auth-input-group">
+            <label class="auth-label"><i class="ti ti-key"></i> Your Answer</label>
+            <input type="text" class="auth-input" id="authForgotSecAnswerInput" placeholder="Enter your answer..." autocomplete="off">
+          </div>
+          <div class="auth-input-group">
+            <label class="auth-label"><i class="ti ti-lock"></i> New Password / PIN (Min 4 chars)</label>
+            <input type="password" class="auth-input" id="authForgotSecNewPwd" placeholder="••••">
+          </div>
+          <div id="secQError" style="display:none; color:#dc2626; font-size:12px; margin-bottom:10px; padding: 8px 12px; background:#fef2f2; border-radius:8px;"></div>
+          <button type="button" class="auth-submit-btn" onclick="verifySecQAndResetPassword()" style="background: linear-gradient(135deg, #10b981, #059669);">
+            <i class="ti ti-shield-check"></i> Verify & Reset Password
           </button>
         </div>
       </div>
 
-      <!-- Step 3: Success -->
-      <div id="otpStep3" style="display:none; text-align:center; padding: 10px 0;">
-        <div style="font-size: 48px; margin-bottom: 10px;">✅</div>
-        <div style="font-size: 16px; font-weight: 800; color: #10b981; margin-bottom: 6px;">Password Reset!</div>
-        <div style="font-size: 13px; color: #64748b; margin-bottom: 18px;">Your new password has been saved. You can now sign in.</div>
-        <button type="button" class="auth-submit-btn" onclick="switchAuthTab('login')" style="background: linear-gradient(135deg, #1a5fa8, #0284c7);">
-          Sign In Now
+      <!-- Method 2: Firebase Email Reset Link (Secondary) -->
+      <div id="secRecovEmail" style="display: none; background: #f8fafc; border: 1.5px solid #e2e8f0; border-radius: 12px; padding: 14px; margin-bottom: 14px;">
+        <div style="font-size: 12px; color: #64748b; margin-bottom: 10px; line-height: 1.45;">
+          We'll send a password reset link to your registered email address via Firebase.
+        </div>
+        <div id="emailSentSuccessNotice" style="display:none; background:#ecfdf5; border:1.5px solid #10b981; border-radius:8px; padding:10px 12px; margin-bottom:10px;">
+          <div style="font-size:12.5px; font-weight:700; color:#065f46;"><i class="ti ti-mail-check"></i> Reset Link Sent!</div>
+          <div style="font-size:11.5px; color:#047857;">Check your email inbox (and Spam folder).</div>
+        </div>
+        <button type="button" id="btnSendRealResetEmail" class="auth-submit-btn" onclick="sendFirebasePasswordResetEmail()" style="background: linear-gradient(135deg, #6366f1, #4f46e5);">
+          <i class="ti ti-mail-forward"></i> Send Reset Link to Email
         </button>
       </div>
 
-      <div style="text-align: center; margin-top: 14px;" id="otpBackRow">
-        <button type="button" onclick="switchAuthTab('login')" class="week-nav-btn" style="font-size: 13px; color: #1a5fa8; font-weight: 700;">
-          &larr; Back to Sign In
+      <!-- Tab toggle: SecQ vs Email -->
+      <div style="display: flex; gap: 8px; margin-bottom: 4px;">
+        <button type="button" id="btnRecovSecQ" onclick="switchRecoveryMethod('secq')" style="flex:1; padding:7px 10px; font-size:11.5px; border-radius:8px; font-weight:700; background:#1a5fa8; color:#fff; border:none; cursor:pointer;">
+          <i class="ti ti-shield-lock"></i> Security Question
+        </button>
+        <button type="button" id="btnRecovEmail" onclick="switchRecoveryMethod('email')" style="flex:1; padding:7px 10px; font-size:11.5px; border-radius:8px; font-weight:700; background:#f1f5f9; color:#64748b; border:none; cursor:pointer;">
+          <i class="ti ti-mail"></i> Email Link
+        </button>
+      </div>
+
+      <div style="text-align:center; margin-top:12px;">
+        <button type="button" onclick="switchAuthTab('login')" style="background:none; border:none; color:#1a5fa8; font-size:12.5px; font-weight:700; cursor:pointer;">
+          <i class="ti ti-arrow-left"></i> Back to Sign In
         </button>
       </div>
     </div></div>
@@ -13591,28 +13898,22 @@ function switchAuthTab(mode) {
     if (mainForm) mainForm.style.display = 'none';
     if (forgotForm) forgotForm.style.display = 'block';
     if (title) title.textContent = 'Reset Password';
-    if (desc) desc.textContent = 'OTP will be sent directly to your registered email.';
-    // Reset OTP form to Step 1
-    var st1 = document.getElementById('otpStep1');
-    var st2 = document.getElementById('otpStep2');
-    var st3 = document.getElementById('otpStep3');
-    var backRow = document.getElementById('otpBackRow');
-    if (st1) st1.style.display = 'block';
-    if (st2) st2.style.display = 'none';
-    if (st3) st3.style.display = 'none';
-    if (backRow) backRow.style.display = 'block';
+    if (desc) desc.textContent = 'Verify your identity using your security question.';
+    // Reset security question recovery form
     var emailInpF = document.getElementById('authForgotEmailInput');
     if (emailInpF) emailInpF.value = '';
-    var otpInpF = document.getElementById('authForgotOtpInput');
-    if (otpInpF) otpInpF.value = '';
-    var newPwdF = document.getElementById('authForgotNewPwd');
-    if (newPwdF) newPwdF.value = '';
-    var sendErr = document.getElementById('otpSendError');
-    if (sendErr) sendErr.style.display = 'none';
-    var verErr = document.getElementById('otpVerifyError');
-    if (verErr) verErr.style.display = 'none';
-    // Reset OTP state
-    _otpCode = ''; _otpExpiry = 0; _otpEmail = '';
+    var secAnsInp = document.getElementById('authForgotSecAnswerInput');
+    if (secAnsInp) secAnsInp.value = '';
+    var secNewPwd = document.getElementById('authForgotSecNewPwd');
+    if (secNewPwd) secNewPwd.value = '';
+    var secQErr = document.getElementById('secQError');
+    if (secQErr) secQErr.style.display = 'none';
+    var secQArea = document.getElementById('secQAnswerArea');
+    if (secQArea) secQArea.style.display = 'none';
+    var emailSent = document.getElementById('emailSentSuccessNotice');
+    if (emailSent) emailSent.style.display = 'none';
+    // Default to security question method
+    switchRecoveryMethod('secq');
   }
 }
 
@@ -13735,189 +14036,7 @@ var SEC_QUESTIONS = {
 };
 
 // ============================================================
-// === EMAIL OTP PASSWORD RECOVERY (via EmailJS - Secure) ===
-// ============================================================
-// SETUP INSTRUCTIONS:
-//   1. Go to https://emailjs.com and create a FREE account
-//   2. Add Email Service: Gmail → Service ID = "service_iradah"
-//   3. Create Email Template with these variables:
-//      Subject: Your Iradah OTP Code: {{otp_code}}
-//      Body:
-//        Assalamu Alaikum {{user_name}},
-//        Your Iradah password reset OTP is: {{otp_code}}
-//        Valid for 10 minutes. Do NOT share this code.
-//      Template ID = "template_iradah_otp"
-//   4. Copy your Public Key from Account > API Keys
-//      Replace YOUR_EMAILJS_PUBLIC_KEY below
-// ============================================================
-
-var EMAILJS_SERVICE_ID   = 'service_iradah';      // Your EmailJS Service ID
-var EMAILJS_TEMPLATE_ID  = 'template_iradah_otp'; // Your EmailJS Template ID
-var EMAILJS_PUBLIC_KEY   = 'YOUR_EMAILJS_PUBLIC_KEY'; // Your EmailJS Public Key
-
-var _otpCode     = '';     // Current OTP (6-digit)
-var _otpExpiry   = 0;      // Timestamp when OTP expires
-var _otpEmail    = '';     // Email OTP was sent to
-
-function _generateOTP() {
-  return String(Math.floor(100000 + Math.random() * 900000));
-}
-
-function sendEmailOTP() {
-  var email = (document.getElementById('authForgotEmailInput') || {}).value;
-  if (!email) email = '';
-  email = email.trim().toLowerCase();
-  var errEl = document.getElementById('otpSendError');
-  if (errEl) errEl.style.display = 'none';
-
-  if (!email || !email.includes('@')) {
-    if (errEl) { errEl.textContent = 'Please enter a valid email address.'; errEl.style.display = 'block'; }
-    return;
-  }
-
-  // Check if email is registered in Firebase
-  showToast('Verifying account...');
-  var btn = document.getElementById('btnSendOtp');
-  if (btn) { btn.disabled = true; btn.textContent = 'Sending...'; }
-
-  loadFromCloudDatabase(email, function(data) {
-    if (!data || !data.user || !data.user.email) {
-      if (btn) { btn.disabled = false; btn.innerHTML = '<i class="ti ti-send"></i> Send OTP to My Email'; }
-      if (errEl) { errEl.textContent = 'No account found with this email. Please check your email or create a new account.'; errEl.style.display = 'block'; }
-      return;
-    }
-
-    // Account found - generate OTP and send via EmailJS
-    _otpCode   = _generateOTP();
-    _otpExpiry = Date.now() + (10 * 60 * 1000); // 10 minutes
-    _otpEmail  = email;
-
-    // Initialize EmailJS
-    if (typeof emailjs === 'undefined') {
-      if (btn) { btn.disabled = false; btn.innerHTML = '<i class="ti ti-send"></i> Send OTP to My Email'; }
-      if (errEl) { errEl.textContent = 'Email service not loaded. Please check your internet connection and try again.'; errEl.style.display = 'block'; }
-      return;
-    }
-
-    emailjs.init(EMAILJS_PUBLIC_KEY);
-
-    var templateParams = {
-      to_email:  email,
-      user_name: (data.user && data.user.name) ? data.user.name : 'User',
-      otp_code:  _otpCode,
-      app_name:  'Iradah'
-    };
-
-    emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, templateParams)
-      .then(function(response) {
-        if (btn) { btn.disabled = false; btn.innerHTML = '<i class="ti ti-send"></i> Send OTP to My Email'; }
-        // Show step 2
-        var step1 = document.getElementById('otpStep1');
-        var step2 = document.getElementById('otpStep2');
-        var sentMsg = document.getElementById('otpSentToMsg');
-        if (step1) step1.style.display = 'none';
-        if (step2) step2.style.display = 'block';
-        if (sentMsg) sentMsg.textContent = 'OTP sent to: ' + email + ' (check Spam folder too)';
-        showToast('OTP sent to your email!');
-      }, function(error) {
-        if (btn) { btn.disabled = false; btn.innerHTML = '<i class="ti ti-send"></i> Send OTP to My Email'; }
-        if (errEl) {
-          if (EMAILJS_PUBLIC_KEY === 'YOUR_EMAILJS_PUBLIC_KEY') {
-            errEl.textContent = 'EmailJS not configured yet. Please follow setup instructions in the app code.';
-          } else {
-            errEl.textContent = 'Failed to send OTP: ' + (error.text || 'Please check internet connection.');
-          }
-          errEl.style.display = 'block';
-        }
-        console.error('EmailJS error:', error);
-      });
-  });
-}
-
-function verifyEmailOTP() {
-  var enteredOtp = ((document.getElementById('authForgotOtpInput') || {}).value || '').trim();
-  var newPwd     = ((document.getElementById('authForgotNewPwd') || {}).value || '').trim();
-  var errEl      = document.getElementById('otpVerifyError');
-  if (errEl) errEl.style.display = 'none';
-
-  if (!enteredOtp || enteredOtp.length !== 6) {
-    if (errEl) { errEl.textContent = 'Please enter the 6-digit OTP code.'; errEl.style.display = 'block'; }
-    return;
-  }
-  if (!newPwd || newPwd.length < 4) {
-    if (errEl) { errEl.textContent = 'New password must be at least 4 characters.'; errEl.style.display = 'block'; }
-    return;
-  }
-  if (Date.now() > _otpExpiry) {
-    if (errEl) { errEl.textContent = 'OTP has expired. Please request a new one.'; errEl.style.display = 'block'; }
-    // Go back to step 1
-    var step1 = document.getElementById('otpStep1');
-    var step2 = document.getElementById('otpStep2');
-    if (step1) step1.style.display = 'block';
-    if (step2) step2.style.display = 'none';
-    return;
-  }
-  if (enteredOtp !== _otpCode) {
-    if (errEl) { errEl.textContent = 'Incorrect OTP. Please try again.'; errEl.style.display = 'block'; }
-    return;
-  }
-
-  // OTP correct! Reset password in Firebase
-  showToast('Verifying...');
-  loadFromCloudDatabase(_otpEmail, function(data) {
-    if (!data) {
-      if (errEl) { errEl.textContent = 'Account not found. Please try again.'; errEl.style.display = 'block'; }
-      return;
-    }
-    // Hash new password same way as registration
-    var newHash = simpleHash(newPwd);
-    // Update in Firebase
-    var db = (typeof firebase !== 'undefined' && firebase.apps && firebase.apps.length > 0)
-      ? firebase.firestore() : null;
-    if (db) {
-      var safeEmail = _otpEmail.replace(/[.#$[\]]/g, '_');
-      db.collection('iradah_users').doc(safeEmail).update({
-        authHash: newHash
-      }).then(function() {
-        // OTP used - clear it
-        _otpCode = '';
-        _otpExpiry = 0;
-        // Show success step
-        var step2 = document.getElementById('otpStep2');
-        var step3 = document.getElementById('otpStep3');
-        var backRow = document.getElementById('otpBackRow');
-        if (step2) step2.style.display = 'none';
-        if (step3) step3.style.display = 'block';
-        if (backRow) backRow.style.display = 'none';
-        showToast('Password reset successfully!');
-      }).catch(function(e) {
-        if (errEl) { errEl.textContent = 'Error saving new password. Please try again.'; errEl.style.display = 'block'; }
-        console.error('Reset error:', e);
-      });
-    } else {
-      // Local fallback (offline mode)
-      AppState.authHash = simpleHash(newPwd);
-      _otpCode = '';
-      _otpExpiry = 0;
-      var step2 = document.getElementById('otpStep2');
-      var step3 = document.getElementById('otpStep3');
-      var backRow = document.getElementById('otpBackRow');
-      if (step2) step2.style.display = 'none';
-      if (step3) step3.style.display = 'block';
-      if (backRow) backRow.style.display = 'none';
-      showToast('Password reset successfully!');
-    }
-  });
-}
-
-function resendOTP() {
-  var step1 = document.getElementById('otpStep1');
-  var step2 = document.getElementById('otpStep2');
-  if (step1) step1.style.display = 'block';
-  if (step2) step2.style.display = 'none';
-  _otpCode = '';
-  _otpExpiry = 0;
-}
+// Account Recovery: Security Question (Default) & Firebase Password Reset Link
 
 function continueAsGuest() {
   closeModal('authModal');
@@ -13925,6 +14044,138 @@ function continueAsGuest() {
   checkOnboardingOrMainApp();
 }
 
+function switchRecoveryMethod(method) {
+  var secQDiv = document.getElementById('secRecovSecQ');
+  var emailDiv = document.getElementById('secRecovEmail');
+  var btnSecQ = document.getElementById('btnRecovSecQ');
+  var btnEmail = document.getElementById('btnRecovEmail');
+  if (method === 'secq') {
+    if (secQDiv) secQDiv.style.display = 'block';
+    if (emailDiv) emailDiv.style.display = 'none';
+    if (btnSecQ) { btnSecQ.style.background = '#1a5fa8'; btnSecQ.style.color = '#fff'; }
+    if (btnEmail) { btnEmail.style.background = '#f1f5f9'; btnEmail.style.color = '#64748b'; }
+  } else {
+    if (secQDiv) secQDiv.style.display = 'none';
+    if (emailDiv) emailDiv.style.display = 'block';
+    if (btnSecQ) { btnSecQ.style.background = '#f1f5f9'; btnSecQ.style.color = '#64748b'; }
+    if (btnEmail) { btnEmail.style.background = '#1a5fa8'; btnEmail.style.color = '#fff'; }
+  }
+}
+
+
+var forgotAccountData = null;
+var forgotAccountEmail = '';
+
+function lookupSecurityQuestion() {
+  var email = document.getElementById('authForgotEmailInput').value.trim();
+  if (!email || !email.includes('@')) {
+    alert('Please enter a valid email address.');
+    return;
+  }
+  showToast('Looking up account...');
+  loadFromCloudDatabase(email, function(data, found) {
+    if (!found || !data) {
+      alert('No account found with this email: ' + email);
+      return;
+    }
+    if (!data.securityQuestion || !data.securityAnswerHash) {
+      alert('This account was created without a security question. Please use the Official Reset Email tab.');
+      switchRecoveryMethod('email');
+      return;
+    }
+    forgotAccountData = data;
+    forgotAccountEmail = email;
+
+    var qKey = data.securityQuestion;
+    var qText = SEC_QUESTIONS[qKey] || qKey;
+    var promptEl = document.getElementById('dispSecQPrompt');
+    if (promptEl) {
+      promptEl.innerHTML = '<i class="ti ti-help"></i> <span>' + qText + '</span>';
+    }
+    var secQArea = document.getElementById('secQAnswerArea');
+    if (secQArea) secQArea.style.display = 'block';
+    var findBtn = document.getElementById('btnFindSecQ');
+    if (findBtn) findBtn.style.display = 'none';
+    var inp = document.getElementById('authForgotSecAnswerInput');
+    if (inp) inp.focus();
+  });
+}
+
+function verifySecQAndResetPassword() {
+  if (!forgotAccountData || !forgotAccountEmail) {
+    alert('Please lookup your security question first.');
+    return;
+  }
+  var enteredAnswer = document.getElementById('authForgotSecAnswerInput').value.trim().toLowerCase();
+  var newPwd = document.getElementById('authForgotSecNewPwd').value.trim();
+
+  if (!enteredAnswer) {
+    alert('Please enter your secret answer.');
+    return;
+  }
+  if (!newPwd || newPwd.length < 4) {
+    alert('New password/PIN must be at least 4 characters.');
+    return;
+  }
+
+  var enteredHash = hashSecret(enteredAnswer);
+  if (enteredHash !== forgotAccountData.securityAnswerHash) {
+    alert('Security check failed: Incorrect secret answer. Access denied to protect this account.');
+    return;
+  }
+
+  // Answer is verified! Legitimate owner confirmed!
+  var hashedPwd = hashSecret(newPwd);
+  forgotAccountData.authHash = hashedPwd;
+  AppState = Object.assign(AppState, forgotAccountData);
+  AppState.user.isLoggedIn = true;
+  AppState.user.email = forgotAccountEmail;
+  AppState.authHash = hashedPwd;
+
+  saveAppState(false);
+  saveToCloudDatabase(forgotAccountEmail, AppState);
+
+  closeModal('authModal');
+  renderAll();
+  checkOnboardingOrMainApp();
+  alert('Security answer verified! Your password has been updated and you are now logged in as ' + forgotAccountEmail);
+}
+
+function sendFirebasePasswordResetEmail() {
+  var email = document.getElementById('authForgotEmailInput').value.trim();
+  if (!email || !email.includes('@')) {
+    alert('Please enter a valid email address.');
+    return;
+  }
+  showToast('Connecting to Firebase Mail Service...');
+
+  if (typeof firebase !== 'undefined' && typeof firebase.auth === 'function') {
+    firebase.auth().sendPasswordResetEmail(email)
+      .then(function() {
+        var notice = document.getElementById('emailSentSuccessNotice');
+        if (notice) notice.style.display = 'block';
+        var btn = document.getElementById('btnSendRealResetEmail');
+        if (btn) btn.style.display = 'none';
+        showToast('Password reset email dispatched to ' + email);
+      })
+      .catch(function(err) {
+        console.log('Firebase Auth result:', err);
+        if (err.code === 'auth/configuration-not-found' || err.code === 'auth/operation-not-allowed') {
+          alert('Firebase Email Service Note: Automated email sending requires toggling Email/Password ON in your Firebase Console. Please click the Security Question tab to reset your password right now with 100% security!');
+          switchRecoveryMethod('secq');
+        } else if (err.code === 'auth/user-not-found') {
+          alert('No Firebase user record found for this email. Please use your Secret Security Question tab to reset your password.');
+          switchRecoveryMethod('secq');
+        } else {
+          alert('Firebase Notice: ' + err.message + ' - Please use your Secret Security Question to reset your password securely.');
+          switchRecoveryMethod('secq');
+        }
+      });
+  } else {
+    alert('Firebase Auth is not available. Please use your Secret Security Question.');
+    switchRecoveryMethod('secq');
+  }
+}
 // ============================================================
 // ===  NOTIFICATION & 100% DAILY ALERT ENGINE               ===
 // ============================================================
@@ -14692,9 +14943,40 @@ function changeDailyDay(delta) {
   renderDailyDay();
 }
 
+
+function isDayComplete(day) {
+  if (!AppState.dailyProgram || !AppState.dailyProgram.dayProgress) return false;
+  var dp = AppState.dailyProgram.dayProgress[day];
+  if (!dp) return false;
+  // Day is complete when all 4 core daily practices & lessons are done
+  return !!(dp.morningDone && dp.eveningDone && dp.ibnDone && dp.bfDone);
+}
+
+function canAccessDay(day) {
+  // Day 1 is always unlocked and accessible
+  if (day <= 1) return true;
+  // Any subsequent day is unlocked only if the previous day is complete
+  return isDayComplete(day - 1);
+}
+
+function getMaxUnlockedDay() {
+  if (!AppState.dailyProgram || !AppState.dailyProgram.dayProgress) return 1;
+  var maxUnlocked = 1;
+  for (var d = 1; d <= 90; d++) {
+    if (isDayComplete(d)) {
+      maxUnlocked = Math.min(90, d + 1);
+    } else {
+      break;
+    }
+  }
+  return maxUnlocked;
+}
+
 function renderDailyDay() {
   var d = currentSelectedDay;
-  var dData = getDayData(d);
+  if (d < 1) d = 1;
+  if (d > 90) d = 90;
+  currentSelectedDay = d;
 
   var badge = document.getElementById('dailyDayBadge');
   if (badge) badge.textContent = 'Day ' + d;
@@ -14708,6 +14990,43 @@ function renderDailyDay() {
       cycleBadge.textContent = 'Day ' + d + ' of 90';
     }
   }
+
+  var slider = document.getElementById('daySlider');
+  if (slider) slider.value = d;
+
+  // Day Lock Check:
+  // Cannot access day D unless all tasks of day D-1 are completed
+  var dayContent = document.getElementById('dailyDayContent');
+  var lockMsg = document.getElementById('dailyDayLockedMsg');
+
+  if (!canAccessDay(d)) {
+    if (dayContent) dayContent.style.display = 'none';
+    if (lockMsg) {
+      lockMsg.style.display = 'flex';
+      var prevDay = d - 1;
+      lockMsg.innerHTML = '<div style="text-align:center; padding:36px 18px; max-width:380px; margin:0 auto;">' +
+        '<div style="width:68px; height:68px; border-radius:50%; background:#fef3c7; color:#d97706; display:flex; align-items:center; justify-content:center; font-size:32px; margin:0 auto 16px; border:2px solid #fde68a;"><i class="ti ti-lock"></i></div>' +
+        '<div style="font-size:20px; font-weight:800; color:#1e293b; margin-bottom:8px;">Day ' + d + ' is Locked</div>' +
+        '<div style="font-size:14px; color:#64748b; line-height:1.55; margin-bottom:20px;">Please complete all daily tasks of <strong>Day ' + prevDay + '</strong> to unlock this day.</div>' +
+        '<div style="background:#ffffff; border:1.5px solid #e2e8f0; border-radius:14px; padding:14px 16px; margin-bottom:22px; text-align:left; box-shadow:0 2px 6px rgba(0,0,0,0.03);">' +
+        '<div style="font-size:12px; font-weight:800; color:#334155; margin-bottom:10px; text-transform:uppercase; letter-spacing:0.5px;"><i class="ti ti-list-check" style="color:#1a5fa8;"></i> Day ' + prevDay + ' Requirements:</div>' +
+        '<div style="display:flex; align-items:center; gap:8px; font-size:13px; color:#475569; margin-bottom:7px;"><i class="ti ti-circle-check" style="color:#10b981;"></i> <span>Morning Adhkar (Al-Wazifatul Kareemah)</span></div>' +
+        '<div style="display:flex; align-items:center; gap:8px; font-size:13px; color:#475569; margin-bottom:7px;"><i class="ti ti-circle-check" style="color:#10b981;"></i> <span>Evening Adhkar</span></div>' +
+        '<div style="display:flex; align-items:center; gap:8px; font-size:13px; color:#475569; margin-bottom:7px;"><i class="ti ti-circle-check" style="color:#10b981;"></i> <span>Ibn Qayyim Purification Lesson</span></div>' +
+        '<div style="display:flex; align-items:center; gap:8px; font-size:13px; color:#475569;"><i class="ti ti-circle-check" style="color:#10b981;"></i> <span>Neuroscience Breaking Free Lesson</span></div>' +
+        '</div>' +
+        '<button type="button" onclick="currentSelectedDay=' + prevDay + '; renderDailyDay();" style="width:100%; background:linear-gradient(135deg,#1a5fa8,#0284c7); color:#fff; border:none; border-radius:14px; padding:14px 20px; font-size:14.5px; font-weight:700; cursor:pointer; box-shadow:0 4px 14px rgba(2,132,199,0.3); display:flex; align-items:center; justify-content:center; gap:8px;">' +
+        '<i class="ti ti-arrow-left"></i> Go Back to Day ' + prevDay + '</button>' +
+        '</div>';
+    }
+    return;
+  }
+
+  // Day is unlocked & accessible
+  if (dayContent) dayContent.style.display = 'block';
+  if (lockMsg) lockMsg.style.display = 'none';
+
+  var dData = getDayData(d);
 
   // Tazkiyah & Kanzul Iman module
   var ibnT = document.getElementById('dailyIbnTitle');
@@ -15503,9 +15822,7 @@ document.addEventListener('DOMContentLoaded', function() {
     if (document.visibilityState === 'hidden') saveAppState(false);
   });
 });
-<script src="app_fixes.js"></script>
-  
+
 </script>
 </body>
 </html>
-
