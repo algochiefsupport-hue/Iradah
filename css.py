@@ -2166,5 +2166,63 @@ body {
   box-shadow: 0 1px 6px rgba(239,68,68,0.2);
 }
 
+
+/* Onboarding Mobile Fixes */
+.onboarding-screen {
+  max-height: 100vh;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+.onboarding-screen .q-option-btn {
+  padding: 10px 14px;
+  font-size: 13px;
+  margin-bottom: 6px;
+  min-height: 44px;
+}
+.onboarding-screen h2, .onboarding-screen .screen-title {
+  font-size: clamp(16px, 4vw, 22px);
+  line-height: 1.3;
+  margin-bottom: 8px;
+}
+.onboarding-screen .screen-subtitle, .onboarding-screen p {
+  font-size: clamp(12px, 3vw, 14px);
+  line-height: 1.45;
+}
+/* Prevent onboarding from being taller than screen */
+#onboardingContainer {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  overflow: hidden;
+}
+#onboardingContainer .ob-slide {
+  height: 100%;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  padding-bottom: env(safe-area-inset-bottom, 16px);
+}
+/* Question screens - compact layout */
+.ob-question-wrap {
+  padding: 16px 16px 80px;
+}
+.ob-question-wrap .ob-q-title {
+  font-size: clamp(15px, 4.5vw, 20px);
+  font-weight: 800;
+  line-height: 1.3;
+  margin-bottom: 6px;
+}
+.ob-question-wrap .ob-q-subtitle {
+  font-size: clamp(11px, 3vw, 13px);
+  color: #64748b;
+  margin-bottom: 14px;
+}
+.ob-option-card {
+  padding: 10px 14px;
+  margin-bottom: 6px;
+  border-radius: 10px;
+  font-size: 13px;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+}
 </style>
 """

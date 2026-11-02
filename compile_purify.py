@@ -128,8 +128,7 @@ INDEX_HTML = f"""<!DOCTYPE html>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
 
-  <!-- EmailJS - Real Email OTP Sender (Free, No Backend Needed) -->
-  <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+  <!-- Account Security: Security Question Recovery & Firebase Auth -->
 
 {CSS_CONTENT}
 

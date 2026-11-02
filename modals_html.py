@@ -67,69 +67,49 @@ MODALS_HTML = """
       </div>
     </div>
 
-    <!-- Form 2: Forgot Password - Email OTP (Secure) -->
+        <!-- Form 2: Forgot Password - 100% Security Question Recovery (NO OTP) -->
     <div id="authForgotForm" style="display: none;">
-
-      <!-- Step 1: Enter Email -->
-      <div id="otpStep1">
-        <div style="font-size: 13px; color: #475569; margin-bottom: 16px; line-height: 1.5;">
-          Enter your registered email. A <strong>6-digit OTP</strong> will be sent directly to your inbox — secure and private.
-        </div>
-        <div class="auth-input-group">
-          <label class="auth-label"><i class="ti ti-mail"></i> Registered Email Address</label>
-          <input type="email" class="auth-input" id="authForgotEmailInput" placeholder="your.email@example.com">
-        </div>
-        <div id="otpSendError" style="display:none; color:#dc2626; font-size:12px; margin-bottom:10px; padding: 8px 12px; background:#fef2f2; border-radius:8px;"></div>
-        <button type="button" class="auth-submit-btn" id="btnSendOtp" onclick="sendEmailOTP()" style="background: linear-gradient(135deg, #1a5fa8, #0284c7);">
-          <i class="ti ti-send"></i> Send OTP to My Email
-        </button>
-        <div style="text-align:center; margin-top:10px; font-size:11.5px; color:#94a3b8;">
-          <i class="ti ti-lock"></i> OTP expires in 10 minutes &bull; Sent only to your email
-        </div>
+      <div style="font-size: 13px; color: #475569; margin-bottom: 14px; line-height: 1.5;">
+        Enter your registered email address, then answer your secret security question to reset your password.
       </div>
 
-      <!-- Step 2: Enter OTP + New Password -->
-      <div id="otpStep2" style="display:none;">
-        <div style="background: #ecfdf5; border: 1.5px solid #10b981; border-radius: 10px; padding: 12px; margin-bottom: 14px;">
-          <div style="font-size: 12.5px; font-weight: 700; color: #065f46; margin-bottom: 3px;">
-            <i class="ti ti-mail-check"></i> OTP Sent Successfully!
-          </div>
-          <div style="font-size: 11.5px; color: #047857;" id="otpSentToMsg">
-            Check your email inbox (and Spam folder).
-          </div>
+      <div class="auth-input-group">
+        <label class="auth-label"><i class="ti ti-mail"></i> Your Registered Email Address</label>
+        <input type="email" class="auth-input" id="authForgotEmailInput" placeholder="your.email@example.com">
+      </div>
+
+      <div id="secRecovSecQ" style="background: #f8fafc; border: 1.5px solid #e2e8f0; border-radius: 12px; padding: 14px; margin-bottom: 14px;">
+        <div style="font-size: 12px; color: #64748b; margin-bottom: 10px; line-height: 1.45;">
+          Answer the security question you chose during registration:
         </div>
-        <div class="auth-input-group">
-          <label class="auth-label"><i class="ti ti-numbers"></i> Enter 6-Digit OTP Code</label>
-          <input type="number" class="auth-input" id="authForgotOtpInput" placeholder="e.g. 284739" maxlength="6" style="letter-spacing: 4px; font-size: 20px; font-weight: 700; text-align: center;">
-        </div>
-        <div class="auth-input-group">
-          <label class="auth-label"><i class="ti ti-lock"></i> New Password / PIN (Min 4 chars)</label>
-          <input type="password" class="auth-input" id="authForgotNewPwd" placeholder="••••••••">
-        </div>
-        <div id="otpVerifyError" style="display:none; color:#dc2626; font-size:12px; margin-bottom:10px; padding: 8px 12px; background:#fef2f2; border-radius:8px;"></div>
-        <button type="button" class="auth-submit-btn" onclick="verifyEmailOTP()" style="background: linear-gradient(135deg, #10b981, #059669);">
-          <i class="ti ti-shield-check"></i> Verify OTP & Reset Password
+
+        <button type="button" class="auth-submit-btn" id="btnFindSecQ" onclick="lookupSecurityQuestion()" style="padding: 11px; font-size: 13.5px; margin-bottom: 6px; background: linear-gradient(135deg, #1a5fa8, #0284c7);">
+          <i class="ti ti-search"></i> Find My Security Question
         </button>
-        <div style="text-align:center; margin-top:10px;">
-          <button type="button" onclick="resendOTP()" style="background:none; border:none; color:#1a5fa8; font-size:12px; font-weight:700; cursor:pointer; text-decoration:underline;">
-            <i class="ti ti-refresh"></i> Resend OTP
+
+        <div id="secQAnswerArea" style="display: none; margin-top: 12px;">
+          <div style="background: #eff6ff; border: 1.5px solid #bfdbfe; border-radius: 8px; padding: 10px 12px; margin-bottom: 12px;">
+            <div style="font-size: 11px; color: #1e40af; font-weight: 700; margin-bottom: 3px; letter-spacing: 0.5px;">YOUR SECRET QUESTION:</div>
+            <div style="font-size: 13.5px; color: #1e3a8a; font-weight: 700;" id="dispSecQPrompt"></div>
+          </div>
+          <div class="auth-input-group">
+            <label class="auth-label"><i class="ti ti-key"></i> Your Secret Answer</label>
+            <input type="text" class="auth-input" id="authForgotSecAnswerInput" placeholder="Type your answer here..." autocomplete="off">
+          </div>
+          <div class="auth-input-group">
+            <label class="auth-label"><i class="ti ti-lock"></i> New Password / PIN (Min 4 chars)</label>
+            <input type="password" class="auth-input" id="authForgotSecNewPwd" placeholder="••••">
+          </div>
+          <div id="secQError" style="display:none; color:#dc2626; font-size:12px; margin-bottom:10px; padding: 8px 12px; background:#fef2f2; border-radius:8px;"></div>
+          <button type="button" class="auth-submit-btn" onclick="verifySecQAndResetPassword()" style="background: linear-gradient(135deg, #10b981, #059669); padding: 12px; font-size: 14px; font-weight: 700;">
+            <i class="ti ti-shield-check"></i> Verify & Reset Password
           </button>
         </div>
       </div>
 
-      <!-- Step 3: Success -->
-      <div id="otpStep3" style="display:none; text-align:center; padding: 10px 0;">
-        <div style="font-size: 48px; margin-bottom: 10px;">✅</div>
-        <div style="font-size: 16px; font-weight: 800; color: #10b981; margin-bottom: 6px;">Password Reset!</div>
-        <div style="font-size: 13px; color: #64748b; margin-bottom: 18px;">Your new password has been saved. You can now sign in.</div>
-        <button type="button" class="auth-submit-btn" onclick="switchAuthTab('login')" style="background: linear-gradient(135deg, #1a5fa8, #0284c7);">
-          Sign In Now
-        </button>
-      </div>
-
-      <div style="text-align: center; margin-top: 14px;" id="otpBackRow">
-        <button type="button" onclick="switchAuthTab('login')" class="week-nav-btn" style="font-size: 13px; color: #1a5fa8; font-weight: 700;">
-          &larr; Back to Sign In
+      <div style="text-align:center; margin-top:14px;">
+        <button type="button" onclick="switchAuthTab('login')" style="background:none; border:none; color:#1a5fa8; font-size:13px; font-weight:700; cursor:pointer;">
+          <i class="ti ti-arrow-left"></i> Back to Sign In
         </button>
       </div>
     </div></div>

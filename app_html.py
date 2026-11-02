@@ -161,6 +161,8 @@ APP_HTML = """
       <!-- Day Content Scrollable Area -->
       <div class="daily-content-wrap" id="dailyContentWrap">
 
+        <div id="dailyDayLockedMsg" style="display:none; flex-direction:column; align-items:center; justify-content:center; min-height:60vh;"></div>
+        <div id="dailyDayContent">
         <!-- 1. Daily Spiritual Practices Grid (Moved from Home Page) -->
         <div class="daily-rituals-sec" style="margin-bottom: 16px;">
           <div class="sec-hdr-row">
@@ -254,6 +256,7 @@ APP_HTML = """
             Action reminder content...
           </div>
         </div>
+        </div><!-- end #dailyDayContent -->
 
       </div><!-- end .daily-content-wrap -->
     </section>

@@ -363,28 +363,20 @@ function switchAuthTab(mode) {
     if (mainForm) mainForm.style.display = 'none';
     if (forgotForm) forgotForm.style.display = 'block';
     if (title) title.textContent = 'Reset Password';
-    if (desc) desc.textContent = 'OTP will be sent directly to your registered email.';
-    // Reset OTP form to Step 1
-    var st1 = document.getElementById('otpStep1');
-    var st2 = document.getElementById('otpStep2');
-    var st3 = document.getElementById('otpStep3');
-    var backRow = document.getElementById('otpBackRow');
-    if (st1) st1.style.display = 'block';
-    if (st2) st2.style.display = 'none';
-    if (st3) st3.style.display = 'none';
-    if (backRow) backRow.style.display = 'block';
+    if (desc) desc.textContent = 'Verify your identity using your security question.';
+    // Reset security question recovery form
     var emailInpF = document.getElementById('authForgotEmailInput');
     if (emailInpF) emailInpF.value = '';
-    var otpInpF = document.getElementById('authForgotOtpInput');
-    if (otpInpF) otpInpF.value = '';
-    var newPwdF = document.getElementById('authForgotNewPwd');
-    if (newPwdF) newPwdF.value = '';
-    var sendErr = document.getElementById('otpSendError');
-    if (sendErr) sendErr.style.display = 'none';
-    var verErr = document.getElementById('otpVerifyError');
-    if (verErr) verErr.style.display = 'none';
-    // Reset OTP state
-    _otpCode = ''; _otpExpiry = 0; _otpEmail = '';
+    var secAnsInp = document.getElementById('authForgotSecAnswerInput');
+    if (secAnsInp) secAnsInp.value = '';
+    var secNewPwd = document.getElementById('authForgotSecNewPwd');
+    if (secNewPwd) secNewPwd.value = '';
+    var secQErr = document.getElementById('secQError');
+    if (secQErr) secQErr.style.display = 'none';
+    var secQArea = document.getElementById('secQAnswerArea');
+    if (secQArea) secQArea.style.display = 'none';
+    var findBtn = document.getElementById('btnFindSecQ');
+    if (findBtn) findBtn.style.display = 'block';
   }
 }
 
@@ -507,189 +499,7 @@ var SEC_QUESTIONS = {
 };
 
 // ============================================================
-// === EMAIL OTP PASSWORD RECOVERY (via EmailJS - Secure) ===
-// ============================================================
-// SETUP INSTRUCTIONS:
-//   1. Go to https://emailjs.com and create a FREE account
-//   2. Add Email Service: Gmail → Service ID = "service_iradah"
-//   3. Create Email Template with these variables:
-//      Subject: Your Iradah OTP Code: {{otp_code}}
-//      Body:
-//        Assalamu Alaikum {{user_name}},
-//        Your Iradah password reset OTP is: {{otp_code}}
-//        Valid for 10 minutes. Do NOT share this code.
-//      Template ID = "template_iradah_otp"
-//   4. Copy your Public Key from Account > API Keys
-//      Replace YOUR_EMAILJS_PUBLIC_KEY below
-// ============================================================
-
-var EMAILJS_SERVICE_ID   = 'service_iradah';      // Your EmailJS Service ID
-var EMAILJS_TEMPLATE_ID  = 'template_iradah_otp'; // Your EmailJS Template ID
-var EMAILJS_PUBLIC_KEY   = 'YOUR_EMAILJS_PUBLIC_KEY'; // Your EmailJS Public Key
-
-var _otpCode     = '';     // Current OTP (6-digit)
-var _otpExpiry   = 0;      // Timestamp when OTP expires
-var _otpEmail    = '';     // Email OTP was sent to
-
-function _generateOTP() {
-  return String(Math.floor(100000 + Math.random() * 900000));
-}
-
-function sendEmailOTP() {
-  var email = (document.getElementById('authForgotEmailInput') || {}).value;
-  if (!email) email = '';
-  email = email.trim().toLowerCase();
-  var errEl = document.getElementById('otpSendError');
-  if (errEl) errEl.style.display = 'none';
-
-  if (!email || !email.includes('@')) {
-    if (errEl) { errEl.textContent = 'Please enter a valid email address.'; errEl.style.display = 'block'; }
-    return;
-  }
-
-  // Check if email is registered in Firebase
-  showToast('Verifying account...');
-  var btn = document.getElementById('btnSendOtp');
-  if (btn) { btn.disabled = true; btn.textContent = 'Sending...'; }
-
-  loadFromCloudDatabase(email, function(data) {
-    if (!data || !data.user || !data.user.email) {
-      if (btn) { btn.disabled = false; btn.innerHTML = '<i class="ti ti-send"></i> Send OTP to My Email'; }
-      if (errEl) { errEl.textContent = 'No account found with this email. Please check your email or create a new account.'; errEl.style.display = 'block'; }
-      return;
-    }
-
-    // Account found - generate OTP and send via EmailJS
-    _otpCode   = _generateOTP();
-    _otpExpiry = Date.now() + (10 * 60 * 1000); // 10 minutes
-    _otpEmail  = email;
-
-    // Initialize EmailJS
-    if (typeof emailjs === 'undefined') {
-      if (btn) { btn.disabled = false; btn.innerHTML = '<i class="ti ti-send"></i> Send OTP to My Email'; }
-      if (errEl) { errEl.textContent = 'Email service not loaded. Please check your internet connection and try again.'; errEl.style.display = 'block'; }
-      return;
-    }
-
-    emailjs.init(EMAILJS_PUBLIC_KEY);
-
-    var templateParams = {
-      to_email:  email,
-      user_name: (data.user && data.user.name) ? data.user.name : 'User',
-      otp_code:  _otpCode,
-      app_name:  'Iradah'
-    };
-
-    emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, templateParams)
-      .then(function(response) {
-        if (btn) { btn.disabled = false; btn.innerHTML = '<i class="ti ti-send"></i> Send OTP to My Email'; }
-        // Show step 2
-        var step1 = document.getElementById('otpStep1');
-        var step2 = document.getElementById('otpStep2');
-        var sentMsg = document.getElementById('otpSentToMsg');
-        if (step1) step1.style.display = 'none';
-        if (step2) step2.style.display = 'block';
-        if (sentMsg) sentMsg.textContent = 'OTP sent to: ' + email + ' (check Spam folder too)';
-        showToast('OTP sent to your email!');
-      }, function(error) {
-        if (btn) { btn.disabled = false; btn.innerHTML = '<i class="ti ti-send"></i> Send OTP to My Email'; }
-        if (errEl) {
-          if (EMAILJS_PUBLIC_KEY === 'YOUR_EMAILJS_PUBLIC_KEY') {
-            errEl.textContent = 'EmailJS not configured yet. Please follow setup instructions in the app code.';
-          } else {
-            errEl.textContent = 'Failed to send OTP: ' + (error.text || 'Please check internet connection.');
-          }
-          errEl.style.display = 'block';
-        }
-        console.error('EmailJS error:', error);
-      });
-  });
-}
-
-function verifyEmailOTP() {
-  var enteredOtp = ((document.getElementById('authForgotOtpInput') || {}).value || '').trim();
-  var newPwd     = ((document.getElementById('authForgotNewPwd') || {}).value || '').trim();
-  var errEl      = document.getElementById('otpVerifyError');
-  if (errEl) errEl.style.display = 'none';
-
-  if (!enteredOtp || enteredOtp.length !== 6) {
-    if (errEl) { errEl.textContent = 'Please enter the 6-digit OTP code.'; errEl.style.display = 'block'; }
-    return;
-  }
-  if (!newPwd || newPwd.length < 4) {
-    if (errEl) { errEl.textContent = 'New password must be at least 4 characters.'; errEl.style.display = 'block'; }
-    return;
-  }
-  if (Date.now() > _otpExpiry) {
-    if (errEl) { errEl.textContent = 'OTP has expired. Please request a new one.'; errEl.style.display = 'block'; }
-    // Go back to step 1
-    var step1 = document.getElementById('otpStep1');
-    var step2 = document.getElementById('otpStep2');
-    if (step1) step1.style.display = 'block';
-    if (step2) step2.style.display = 'none';
-    return;
-  }
-  if (enteredOtp !== _otpCode) {
-    if (errEl) { errEl.textContent = 'Incorrect OTP. Please try again.'; errEl.style.display = 'block'; }
-    return;
-  }
-
-  // OTP correct! Reset password in Firebase
-  showToast('Verifying...');
-  loadFromCloudDatabase(_otpEmail, function(data) {
-    if (!data) {
-      if (errEl) { errEl.textContent = 'Account not found. Please try again.'; errEl.style.display = 'block'; }
-      return;
-    }
-    // Hash new password same way as registration
-    var newHash = simpleHash(newPwd);
-    // Update in Firebase
-    var db = (typeof firebase !== 'undefined' && firebase.apps && firebase.apps.length > 0)
-      ? firebase.firestore() : null;
-    if (db) {
-      var safeEmail = _otpEmail.replace(/[.#$[\]]/g, '_');
-      db.collection('iradah_users').doc(safeEmail).update({
-        authHash: newHash
-      }).then(function() {
-        // OTP used - clear it
-        _otpCode = '';
-        _otpExpiry = 0;
-        // Show success step
-        var step2 = document.getElementById('otpStep2');
-        var step3 = document.getElementById('otpStep3');
-        var backRow = document.getElementById('otpBackRow');
-        if (step2) step2.style.display = 'none';
-        if (step3) step3.style.display = 'block';
-        if (backRow) backRow.style.display = 'none';
-        showToast('Password reset successfully!');
-      }).catch(function(e) {
-        if (errEl) { errEl.textContent = 'Error saving new password. Please try again.'; errEl.style.display = 'block'; }
-        console.error('Reset error:', e);
-      });
-    } else {
-      // Local fallback (offline mode)
-      AppState.authHash = simpleHash(newPwd);
-      _otpCode = '';
-      _otpExpiry = 0;
-      var step2 = document.getElementById('otpStep2');
-      var step3 = document.getElementById('otpStep3');
-      var backRow = document.getElementById('otpBackRow');
-      if (step2) step2.style.display = 'none';
-      if (step3) step3.style.display = 'block';
-      if (backRow) backRow.style.display = 'none';
-      showToast('Password reset successfully!');
-    }
-  });
-}
-
-function resendOTP() {
-  var step1 = document.getElementById('otpStep1');
-  var step2 = document.getElementById('otpStep2');
-  if (step1) step1.style.display = 'block';
-  if (step2) step2.style.display = 'none';
-  _otpCode = '';
-  _otpExpiry = 0;
-}
+// Account Recovery: Security Question (Default) & Firebase Password Reset Link
 
 function continueAsGuest() {
   closeModal('authModal');
@@ -697,6 +507,138 @@ function continueAsGuest() {
   checkOnboardingOrMainApp();
 }
 
+function switchRecoveryMethod(method) {
+  var secQDiv = document.getElementById('secRecovSecQ');
+  var emailDiv = document.getElementById('secRecovEmail');
+  var btnSecQ = document.getElementById('btnRecovSecQ');
+  var btnEmail = document.getElementById('btnRecovEmail');
+  if (method === 'secq') {
+    if (secQDiv) secQDiv.style.display = 'block';
+    if (emailDiv) emailDiv.style.display = 'none';
+    if (btnSecQ) { btnSecQ.style.background = '#1a5fa8'; btnSecQ.style.color = '#fff'; }
+    if (btnEmail) { btnEmail.style.background = '#f1f5f9'; btnEmail.style.color = '#64748b'; }
+  } else {
+    if (secQDiv) secQDiv.style.display = 'none';
+    if (emailDiv) emailDiv.style.display = 'block';
+    if (btnSecQ) { btnSecQ.style.background = '#f1f5f9'; btnSecQ.style.color = '#64748b'; }
+    if (btnEmail) { btnEmail.style.background = '#1a5fa8'; btnEmail.style.color = '#fff'; }
+  }
+}
+
+
+var forgotAccountData = null;
+var forgotAccountEmail = '';
+
+function lookupSecurityQuestion() {
+  var email = document.getElementById('authForgotEmailInput').value.trim();
+  if (!email || !email.includes('@')) {
+    alert('Please enter a valid email address.');
+    return;
+  }
+  showToast('Looking up account...');
+  loadFromCloudDatabase(email, function(data, found) {
+    if (!found || !data) {
+      alert('No account found with this email: ' + email);
+      return;
+    }
+    if (!data.securityQuestion || !data.securityAnswerHash) {
+      alert('This account was created without a security question. Please use the Official Reset Email tab.');
+      switchRecoveryMethod('email');
+      return;
+    }
+    forgotAccountData = data;
+    forgotAccountEmail = email;
+
+    var qKey = data.securityQuestion;
+    var qText = SEC_QUESTIONS[qKey] || qKey;
+    var promptEl = document.getElementById('dispSecQPrompt');
+    if (promptEl) {
+      promptEl.innerHTML = '<i class="ti ti-help"></i> <span>' + qText + '</span>';
+    }
+    var secQArea = document.getElementById('secQAnswerArea');
+    if (secQArea) secQArea.style.display = 'block';
+    var findBtn = document.getElementById('btnFindSecQ');
+    if (findBtn) findBtn.style.display = 'none';
+    var inp = document.getElementById('authForgotSecAnswerInput');
+    if (inp) inp.focus();
+  });
+}
+
+function verifySecQAndResetPassword() {
+  if (!forgotAccountData || !forgotAccountEmail) {
+    alert('Please lookup your security question first.');
+    return;
+  }
+  var enteredAnswer = document.getElementById('authForgotSecAnswerInput').value.trim().toLowerCase();
+  var newPwd = document.getElementById('authForgotSecNewPwd').value.trim();
+
+  if (!enteredAnswer) {
+    alert('Please enter your secret answer.');
+    return;
+  }
+  if (!newPwd || newPwd.length < 4) {
+    alert('New password/PIN must be at least 4 characters.');
+    return;
+  }
+
+  var enteredHash = hashSecret(enteredAnswer);
+  if (enteredHash !== forgotAccountData.securityAnswerHash) {
+    alert('Security check failed: Incorrect secret answer. Access denied to protect this account.');
+    return;
+  }
+
+  // Answer is verified! Legitimate owner confirmed!
+  var hashedPwd = hashSecret(newPwd);
+  forgotAccountData.authHash = hashedPwd;
+  AppState = Object.assign(AppState, forgotAccountData);
+  AppState.user.isLoggedIn = true;
+  AppState.user.email = forgotAccountEmail;
+  AppState.authHash = hashedPwd;
+
+  saveAppState(false);
+  saveToCloudDatabase(forgotAccountEmail, AppState);
+
+  closeModal('authModal');
+  renderAll();
+  checkOnboardingOrMainApp();
+  alert('Security answer verified! Your password has been updated and you are now logged in as ' + forgotAccountEmail);
+}
+
+function sendFirebasePasswordResetEmail() {
+  var email = document.getElementById('authForgotEmailInput').value.trim();
+  if (!email || !email.includes('@')) {
+    alert('Please enter a valid email address.');
+    return;
+  }
+  showToast('Connecting to Firebase Mail Service...');
+
+  if (typeof firebase !== 'undefined' && typeof firebase.auth === 'function') {
+    firebase.auth().sendPasswordResetEmail(email)
+      .then(function() {
+        var notice = document.getElementById('emailSentSuccessNotice');
+        if (notice) notice.style.display = 'block';
+        var btn = document.getElementById('btnSendRealResetEmail');
+        if (btn) btn.style.display = 'none';
+        showToast('Password reset email dispatched to ' + email);
+      })
+      .catch(function(err) {
+        console.log('Firebase Auth result:', err);
+        if (err.code === 'auth/configuration-not-found' || err.code === 'auth/operation-not-allowed') {
+          alert('Firebase Email Service Note: Automated email sending requires toggling Email/Password ON in your Firebase Console. Please click the Security Question tab to reset your password right now with 100% security!');
+          switchRecoveryMethod('secq');
+        } else if (err.code === 'auth/user-not-found') {
+          alert('No Firebase user record found for this email. Please use your Secret Security Question tab to reset your password.');
+          switchRecoveryMethod('secq');
+        } else {
+          alert('Firebase Notice: ' + err.message + ' - Please use your Secret Security Question to reset your password securely.');
+          switchRecoveryMethod('secq');
+        }
+      });
+  } else {
+    alert('Firebase Auth is not available. Please use your Secret Security Question.');
+    switchRecoveryMethod('secq');
+  }
+}
 // ============================================================
 // ===  NOTIFICATION & 100% DAILY ALERT ENGINE               ===
 // ============================================================
@@ -1464,9 +1406,40 @@ function changeDailyDay(delta) {
   renderDailyDay();
 }
 
+
+function isDayComplete(day) {
+  if (!AppState.dailyProgram || !AppState.dailyProgram.dayProgress) return false;
+  var dp = AppState.dailyProgram.dayProgress[day];
+  if (!dp) return false;
+  // Day is complete when all 4 core daily practices & lessons are done
+  return !!(dp.morningDone && dp.eveningDone && dp.ibnDone && dp.bfDone);
+}
+
+function canAccessDay(day) {
+  // Day 1 is always unlocked and accessible
+  if (day <= 1) return true;
+  // Any subsequent day is unlocked only if the previous day is complete
+  return isDayComplete(day - 1);
+}
+
+function getMaxUnlockedDay() {
+  if (!AppState.dailyProgram || !AppState.dailyProgram.dayProgress) return 1;
+  var maxUnlocked = 1;
+  for (var d = 1; d <= 90; d++) {
+    if (isDayComplete(d)) {
+      maxUnlocked = Math.min(90, d + 1);
+    } else {
+      break;
+    }
+  }
+  return maxUnlocked;
+}
+
 function renderDailyDay() {
   var d = currentSelectedDay;
-  var dData = getDayData(d);
+  if (d < 1) d = 1;
+  if (d > 90) d = 90;
+  currentSelectedDay = d;
 
   var badge = document.getElementById('dailyDayBadge');
   if (badge) badge.textContent = 'Day ' + d;
@@ -1475,11 +1448,48 @@ function renderDailyDay() {
   if (cycleBadge) {
     var cIdx = Math.floor((d - 1) / 7.5) + 1;
     if (typeof CYCLES !== 'undefined' && CYCLES[cIdx - 1]) {
-      cycleBadge.textContent = 'Cycle ' + cIdx + ' • ' + CYCLES[cIdx - 1].name;
+      cycleBadge.textContent = 'Cycle ' + cIdx + ' \u2022 ' + CYCLES[cIdx - 1].name;
     } else {
       cycleBadge.textContent = 'Day ' + d + ' of 90';
     }
   }
+
+  var slider = document.getElementById('daySlider');
+  if (slider) slider.value = d;
+
+  // Day Lock Check:
+  // Cannot access day D unless all tasks of day D-1 are completed
+  var dayContent = document.getElementById('dailyDayContent');
+  var lockMsg = document.getElementById('dailyDayLockedMsg');
+
+  if (!canAccessDay(d)) {
+    if (dayContent) dayContent.style.display = 'none';
+    if (lockMsg) {
+      lockMsg.style.display = 'flex';
+      var prevDay = d - 1;
+      lockMsg.innerHTML = '<div style="text-align:center; padding:36px 18px; max-width:380px; margin:0 auto;">' +
+        '<div style="width:68px; height:68px; border-radius:50%; background:#fef3c7; color:#d97706; display:flex; align-items:center; justify-content:center; font-size:32px; margin:0 auto 16px; border:2px solid #fde68a;"><i class="ti ti-lock"></i></div>' +
+        '<div style="font-size:20px; font-weight:800; color:#1e293b; margin-bottom:8px;">Day ' + d + ' is Locked</div>' +
+        '<div style="font-size:14px; color:#64748b; line-height:1.55; margin-bottom:20px;">Please complete all daily tasks of <strong>Day ' + prevDay + '</strong> to unlock this day.</div>' +
+        '<div style="background:#ffffff; border:1.5px solid #e2e8f0; border-radius:14px; padding:14px 16px; margin-bottom:22px; text-align:left; box-shadow:0 2px 6px rgba(0,0,0,0.03);">' +
+        '<div style="font-size:12px; font-weight:800; color:#334155; margin-bottom:10px; text-transform:uppercase; letter-spacing:0.5px;"><i class="ti ti-list-check" style="color:#1a5fa8;"></i> Day ' + prevDay + ' Requirements:</div>' +
+        '<div style="display:flex; align-items:center; gap:8px; font-size:13px; color:#475569; margin-bottom:7px;"><i class="ti ti-circle-check" style="color:#10b981;"></i> <span>Morning Adhkar (Al-Wazifatul Kareemah)</span></div>' +
+        '<div style="display:flex; align-items:center; gap:8px; font-size:13px; color:#475569; margin-bottom:7px;"><i class="ti ti-circle-check" style="color:#10b981;"></i> <span>Evening Adhkar</span></div>' +
+        '<div style="display:flex; align-items:center; gap:8px; font-size:13px; color:#475569; margin-bottom:7px;"><i class="ti ti-circle-check" style="color:#10b981;"></i> <span>Ibn Qayyim Purification Lesson</span></div>' +
+        '<div style="display:flex; align-items:center; gap:8px; font-size:13px; color:#475569;"><i class="ti ti-circle-check" style="color:#10b981;"></i> <span>Neuroscience Breaking Free Lesson</span></div>' +
+        '</div>' +
+        '<button type="button" onclick="currentSelectedDay=' + prevDay + '; renderDailyDay();" style="width:100%; background:linear-gradient(135deg,#1a5fa8,#0284c7); color:#fff; border:none; border-radius:14px; padding:14px 20px; font-size:14.5px; font-weight:700; cursor:pointer; box-shadow:0 4px 14px rgba(2,132,199,0.3); display:flex; align-items:center; justify-content:center; gap:8px;">' +
+        '<i class="ti ti-arrow-left"></i> Go Back to Day ' + prevDay + '</button>' +
+        '</div>';
+    }
+    return;
+  }
+
+  // Day is unlocked & accessible
+  if (dayContent) dayContent.style.display = 'block';
+  if (lockMsg) lockMsg.style.display = 'none';
+
+  var dData = getDayData(d);
 
   // Tazkiyah & Kanzul Iman module
   var ibnT = document.getElementById('dailyIbnTitle');
@@ -2261,9 +2271,11 @@ document.addEventListener('DOMContentLoaded', function() {
   // Route to onboarding flow or main dashboard
   checkOnboardingOrMainApp();
 
-  // Register service worker
+  // Register service worker with instant update
   if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('sw.js').catch(function(){});
+    navigator.serviceWorker.register('sw.js?v=6').then(function(reg) {
+      if (reg) reg.update();
+    }).catch(function(){});
   }
 
   // Real-time timer update

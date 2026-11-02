@@ -1,5 +1,5 @@
-// Purify Service Worker for offline support and background alerts
-const CACHE_NAME = 'purify-cache-v3';
+// Iradah Service Worker for offline support & automatic cache updates
+const CACHE_NAME = 'iradah-v6-cache';
 const ASSETS = [
   './',
   './index.html',
@@ -16,6 +16,7 @@ self.addEventListener('install', (e) => {
   self.skipWaiting();
 });
 
+// Purge any older cache versions immediately on activate
 self.addEventListener('activate', (e) => {
   e.waitUntil(
     caches.keys().then((keys) => {
@@ -27,10 +28,28 @@ self.addEventListener('activate', (e) => {
   self.clients.claim();
 });
 
+// Network-First for HTML/Navigation, Cache fallback for offline
 self.addEventListener('fetch', (e) => {
+  if (e.request.mode === 'navigate' || (e.request.method === 'GET' && e.request.headers.get('accept') && e.request.headers.get('accept').includes('text/html'))) {
+    e.respondWith(
+      fetch(e.request)
+        .then((response) => {
+          let copy = response.clone();
+          caches.open(CACHE_NAME).then((cache) => cache.put(e.request, copy));
+          return response;
+        })
+        .catch(() => caches.match(e.request))
+    );
+    return;
+  }
+
   e.respondWith(
     caches.match(e.request).then((res) => {
-      return res || fetch(e.request).catch(() => {});
+      return res || fetch(e.request).then((response) => {
+        let copy = response.clone();
+        caches.open(CACHE_NAME).then((cache) => cache.put(e.request, copy));
+        return response;
+      }).catch(() => {});
     })
   );
 });
