@@ -4831,10 +4831,10 @@ body{background:#dde4ed;display:flex;justify-content:center;min-height:100vh;}
       </div>
     </div>
 
-    <!-- Form 2: Forgot Password - Security Question Recovery -->
+        <!-- Form 2: Forgot Password - 100% Security Question Recovery (NO OTP) -->
     <div id="authForgotForm" style="display: none;">
       <div style="font-size: 13px; color: #475569; margin-bottom: 14px; line-height: 1.5;">
-        To protect your account, verify your identity using your security question. Only you know this answer.
+        Enter your registered email address, then answer your secret security question to reset your password.
       </div>
 
       <div class="auth-input-group">
@@ -4842,62 +4842,37 @@ body{background:#dde4ed;display:flex;justify-content:center;min-height:100vh;}
         <input type="email" class="auth-input" id="authForgotEmailInput" placeholder="your.email@example.com">
       </div>
 
-      <!-- Method 1: Security Question (Default, Instant & Secure) -->
       <div id="secRecovSecQ" style="background: #f8fafc; border: 1.5px solid #e2e8f0; border-radius: 12px; padding: 14px; margin-bottom: 14px;">
         <div style="font-size: 12px; color: #64748b; margin-bottom: 10px; line-height: 1.45;">
           Answer the security question you chose during registration:
         </div>
 
-        <button type="button" class="auth-submit-btn" id="btnFindSecQ" onclick="lookupSecurityQuestion()" style="padding: 10px; font-size: 13px; margin-bottom: 10px;">
+        <button type="button" class="auth-submit-btn" id="btnFindSecQ" onclick="lookupSecurityQuestion()" style="padding: 11px; font-size: 13.5px; margin-bottom: 6px; background: linear-gradient(135deg, #1a5fa8, #0284c7);">
           <i class="ti ti-search"></i> Find My Security Question
         </button>
 
-        <div id="secQAnswerArea" style="display: none;">
-          <div style="background: #eff6ff; border: 1.5px solid #bfdbfe; border-radius: 8px; padding: 10px 12px; margin-bottom: 10px;">
-            <div style="font-size: 11px; color: #1e40af; font-weight: 700; margin-bottom: 3px;">YOUR SECURITY QUESTION:</div>
-            <div style="font-size: 13px; color: #1e3a8a; font-weight: 600;" id="dispSecQPrompt"></div>
+        <div id="secQAnswerArea" style="display: none; margin-top: 12px;">
+          <div style="background: #eff6ff; border: 1.5px solid #bfdbfe; border-radius: 8px; padding: 10px 12px; margin-bottom: 12px;">
+            <div style="font-size: 11px; color: #1e40af; font-weight: 700; margin-bottom: 3px; letter-spacing: 0.5px;">YOUR SECRET QUESTION:</div>
+            <div style="font-size: 13.5px; color: #1e3a8a; font-weight: 700;" id="dispSecQPrompt"></div>
           </div>
           <div class="auth-input-group">
-            <label class="auth-label"><i class="ti ti-key"></i> Your Answer</label>
-            <input type="text" class="auth-input" id="authForgotSecAnswerInput" placeholder="Enter your answer..." autocomplete="off">
+            <label class="auth-label"><i class="ti ti-key"></i> Your Secret Answer</label>
+            <input type="text" class="auth-input" id="authForgotSecAnswerInput" placeholder="Type your answer here..." autocomplete="off">
           </div>
           <div class="auth-input-group">
             <label class="auth-label"><i class="ti ti-lock"></i> New Password / PIN (Min 4 chars)</label>
             <input type="password" class="auth-input" id="authForgotSecNewPwd" placeholder="••••">
           </div>
           <div id="secQError" style="display:none; color:#dc2626; font-size:12px; margin-bottom:10px; padding: 8px 12px; background:#fef2f2; border-radius:8px;"></div>
-          <button type="button" class="auth-submit-btn" onclick="verifySecQAndResetPassword()" style="background: linear-gradient(135deg, #10b981, #059669);">
+          <button type="button" class="auth-submit-btn" onclick="verifySecQAndResetPassword()" style="background: linear-gradient(135deg, #10b981, #059669); padding: 12px; font-size: 14px; font-weight: 700;">
             <i class="ti ti-shield-check"></i> Verify & Reset Password
           </button>
         </div>
       </div>
 
-      <!-- Method 2: Firebase Email Reset Link (Secondary) -->
-      <div id="secRecovEmail" style="display: none; background: #f8fafc; border: 1.5px solid #e2e8f0; border-radius: 12px; padding: 14px; margin-bottom: 14px;">
-        <div style="font-size: 12px; color: #64748b; margin-bottom: 10px; line-height: 1.45;">
-          We'll send a password reset link to your registered email address via Firebase.
-        </div>
-        <div id="emailSentSuccessNotice" style="display:none; background:#ecfdf5; border:1.5px solid #10b981; border-radius:8px; padding:10px 12px; margin-bottom:10px;">
-          <div style="font-size:12.5px; font-weight:700; color:#065f46;"><i class="ti ti-mail-check"></i> Reset Link Sent!</div>
-          <div style="font-size:11.5px; color:#047857;">Check your email inbox (and Spam folder).</div>
-        </div>
-        <button type="button" id="btnSendRealResetEmail" class="auth-submit-btn" onclick="sendFirebasePasswordResetEmail()" style="background: linear-gradient(135deg, #6366f1, #4f46e5);">
-          <i class="ti ti-mail-forward"></i> Send Reset Link to Email
-        </button>
-      </div>
-
-      <!-- Tab toggle: SecQ vs Email -->
-      <div style="display: flex; gap: 8px; margin-bottom: 4px;">
-        <button type="button" id="btnRecovSecQ" onclick="switchRecoveryMethod('secq')" style="flex:1; padding:7px 10px; font-size:11.5px; border-radius:8px; font-weight:700; background:#1a5fa8; color:#fff; border:none; cursor:pointer;">
-          <i class="ti ti-shield-lock"></i> Security Question
-        </button>
-        <button type="button" id="btnRecovEmail" onclick="switchRecoveryMethod('email')" style="flex:1; padding:7px 10px; font-size:11.5px; border-radius:8px; font-weight:700; background:#f1f5f9; color:#64748b; border:none; cursor:pointer;">
-          <i class="ti ti-mail"></i> Email Link
-        </button>
-      </div>
-
-      <div style="text-align:center; margin-top:12px;">
-        <button type="button" onclick="switchAuthTab('login')" style="background:none; border:none; color:#1a5fa8; font-size:12.5px; font-weight:700; cursor:pointer;">
+      <div style="text-align:center; margin-top:14px;">
+        <button type="button" onclick="switchAuthTab('login')" style="background:none; border:none; color:#1a5fa8; font-size:13px; font-weight:700; cursor:pointer;">
           <i class="ti ti-arrow-left"></i> Back to Sign In
         </button>
       </div>
@@ -13910,10 +13885,8 @@ function switchAuthTab(mode) {
     if (secQErr) secQErr.style.display = 'none';
     var secQArea = document.getElementById('secQAnswerArea');
     if (secQArea) secQArea.style.display = 'none';
-    var emailSent = document.getElementById('emailSentSuccessNotice');
-    if (emailSent) emailSent.style.display = 'none';
-    // Default to security question method
-    switchRecoveryMethod('secq');
+    var findBtn = document.getElementById('btnFindSecQ');
+    if (findBtn) findBtn.style.display = 'block';
   }
 }
 
@@ -15808,9 +15781,11 @@ document.addEventListener('DOMContentLoaded', function() {
   // Route to onboarding flow or main dashboard
   checkOnboardingOrMainApp();
 
-  // Register service worker
+  // Register service worker with instant update
   if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('sw.js').catch(function(){});
+    navigator.serviceWorker.register('sw.js?v=6').then(function(reg) {
+      if (reg) reg.update();
+    }).catch(function(){});
   }
 
   // Real-time timer update
