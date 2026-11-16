@@ -1,0 +1,59 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="100%" height="100%">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0b1b36"/>
+      <stop offset="50%" stop-color="#103768"/>
+      <stop offset="100%" stop-color="#064e3b"/>
+    </linearGradient>
+    <linearGradient id="goldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fef08a"/>
+      <stop offset="40%" stop-color="#f59e0b"/>
+      <stop offset="100%" stop-color="#b45309"/>
+    </linearGradient>
+    <linearGradient id="glowGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#38bdf8" stop-opacity="0.4"/>
+      <stop offset="100%" stop-color="#38bdf8" stop-opacity="0"/>
+    </linearGradient>
+    <filter id="shadow" x="-10%" y="-10%" width="130%" height="130%">
+      <feDropShadow dx="0" dy="6" stdDeviation="8" flood-color="#000" flood-opacity="0.35"/>
+    </filter>
+  </defs>
+  <!-- Background Squircle -->
+  <rect width="512" height="512" rx="115" fill="url(#bgGrad)"/>
+  <rect width="496" height="496" x="8" y="8" rx="107" fill="none" stroke="url(#goldGrad)" stroke-width="3" stroke-opacity="0.35"/>
+  
+  <!-- Subtle Spiritual Radial Pattern -->
+  <circle cx="256" cy="256" r="180" fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="1.5" stroke-dasharray="6,6"/>
+  <circle cx="256" cy="256" r="130" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="1"/>
+  
+  <!-- Golden Crescent Moon -->
+  <g filter="url(#shadow)">
+    <!-- Crescent Body -->
+    <path d="M 275 120 
+             C 195 125, 135 190, 135 270 
+             C 135 355, 205 420, 290 420 
+             C 340 420, 385 395, 410 360 
+             C 320 385, 220 330, 205 240 
+             C 195 180, 230 135, 275 120 Z" 
+          fill="url(#goldGrad)"/>
+          
+    <!-- 8-Pointed Star (Rub el Hizb) - Symbol of Perfection & Self-Mastery -->
+    <g transform="translate(345, 205) scale(0.95)">
+      <!-- First Rotated Square -->
+      <rect x="-42" y="-42" width="84" height="84" rx="10" fill="url(#goldGrad)"/>
+      <!-- Second Rotated Square at 45 deg -->
+      <rect x="-42" y="-42" width="84" height="84" rx="10" transform="rotate(45)" fill="url(#goldGrad)"/>
+      <!-- Inner Pearl Core -->
+      <circle cx="0" cy="0" r="18" fill="#0b1b36"/>
+      <circle cx="0" cy="0" r="10" fill="url(#goldGrad)"/>
+    </g>
+    
+    <!-- Mini Radiant Star -->
+    <circle cx="230" cy="180" r="5" fill="#fef08a" opacity="0.85"/>
+    <circle cx="395" cy="295" r="4" fill="#fef08a" opacity="0.7"/>
+    <circle cx="180" cy="350" r="4.5" fill="#fef08a" opacity="0.75"/>
+  </g>
+  
+  <!-- "IRADAH" Brand Monogram in Base -->
+  <text x="256" y="475" text-anchor="middle" font-family="'Inter', sans-serif" font-size="28" font-weight="900" fill="#fef08a" letter-spacing="8" opacity="0.95">IRADAH</text>
+</svg>
