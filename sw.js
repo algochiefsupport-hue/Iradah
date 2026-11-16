@@ -1,5 +1,5 @@
-// Iradah Service Worker for offline support & automatic cache updates
-const CACHE_NAME = 'iradah-v19-cache';
+﻿// Iradah Service Worker for offline support & automatic cache updates
+const CACHE_NAME = 'iradah-v20-cache';
 const ASSETS = [
   './',
   './index.html',
@@ -79,3 +79,4 @@ self.addEventListener('notificationclick', (event) => {
     })
   );
 });
+
